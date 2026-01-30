@@ -11,9 +11,11 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem,
+    SidebarMenuItem
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as projectsIndex } from '@/routes/projects';
+import { importData as projectsImportData } from '@/routes/projects';
 import { type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
 
@@ -21,21 +23,31 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
-        icon: LayoutGrid,
+        icon: LayoutGrid
     },
+    {
+        title: 'Projects',
+        href: projectsIndex(),
+        icon: LayoutGrid
+    },
+    {
+        title: 'Project Import',
+        href: projectsImportData(),
+        icon: LayoutGrid
+    }
 ];
 
 const footerNavItems: NavItem[] = [
     {
         title: 'Github Repo',
         href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
+        icon: Folder
     },
     {
         title: 'Documentation',
         href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
+        icon: BookOpen
+    }
 ];
 </script>
 

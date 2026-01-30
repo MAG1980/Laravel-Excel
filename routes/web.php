@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -14,4 +15,7 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/settings.php';
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+Route::get('/projects/import', [ProjectController::class, 'importData'])->name('projects.importData');
+
+require __DIR__ . '/settings.php';
