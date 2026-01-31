@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { route } from 'ziggy-js';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -24,8 +25,13 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'TestDashboard',
-        href: dashboard(),
+        title: 'Projects',
+        href: route('projects.index'),
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Project Import',
+        href: route('projects.import'),
         icon: LayoutGrid,
     },
 ];

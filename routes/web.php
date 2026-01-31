@@ -10,12 +10,12 @@ Route::get('/', function () {
         'canRegister' => Features::enabled(Features::registration()),
     ]);
 })->name('home');
-  
+
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-Route::get('/projects', [ProjectController::class, 'import'])->name('projects.import');
+Route::get('/projects/import', [ProjectController::class, 'import'])->name('projects.import');
 
 require __DIR__ . '/settings.php';
