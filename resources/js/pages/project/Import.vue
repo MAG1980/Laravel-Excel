@@ -1,17 +1,21 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { Head } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { importData } from '@/routes/projects';
+import type { BreadcrumbItem } from '@/types';
 
-export default defineComponent({
-    name: 'Import',
-    components: { AppLayout },
-});
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Project Import',
+        href: importData().url,
+    },
+];
 </script>
-
 <template>
-    <AppLayout>
+    <Head title="Project Import" />
+    <AppLayout :breadcrumbs="breadcrumbs">
         <div>
-            <h1>Projects Import</h1>
+            <h1>Project Import</h1>
         </div>
     </AppLayout>
 </template>
