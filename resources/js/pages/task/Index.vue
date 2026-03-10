@@ -1,15 +1,23 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { Head } from '@inertiajs/vue3';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { index as tasksIndex } from '@/routes/tasks';
+import type { BreadcrumbItem } from '@/types';
 
-export default defineComponent({
-    name: 'Index',
-});
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Tasks',
+        href: tasksIndex().url,
+    },
+];
 </script>
-
 <template>
-    <div>
-        <h1>Tasks Index</h1>
-    </div>
+    <Head title="Tasks" />
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div>
+            <h1>Tasks</h1>
+        </div>
+    </AppLayout>
 </template>
 
 <style scoped></style>
