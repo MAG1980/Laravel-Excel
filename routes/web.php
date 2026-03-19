@@ -17,7 +17,8 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-Route::get('/projects/import', [ProjectController::class, 'importData'])->name('projects.importData');
+Route::get('/projects/import', [ProjectController::class, 'importShow'])->name('projects.import.show');
+Route::post('/projects/import', [ProjectController::class, 'importStore'])->name('projects.import.store');
 
 Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
 

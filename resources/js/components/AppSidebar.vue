@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { index as projectsIndex } from '@/routes/projects';
-import { importData as projectsImportData } from '@/routes/projects';
+import { show as projectsImportShow } from '@/routes/projects/import';
 import { index as tasksIndex } from '@/routes/tasks';
 import { type NavItem } from '@/types';
 import AppLogo from './AppLogo.vue';
@@ -33,7 +33,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Project Import',
-        href: projectsImportData(),
+        href: projectsImportShow(),
         icon: Import,
     },
     {
