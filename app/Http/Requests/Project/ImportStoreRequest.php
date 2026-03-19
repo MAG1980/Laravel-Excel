@@ -30,7 +30,7 @@ class ImportStoreRequest extends FormRequest
         }
 
         return [
-            'file' => 'required|file',
+            'file' => 'required|file|mimes:xlsx,xls',
         ];
     }
 }

@@ -23,14 +23,8 @@ class ProjectController extends Controller
     public function importStore(ImportStoreRequest $request)
     {
         $data = $request->validated();
-        $file = $data['file'];
-        $path = Storage::disk('public')->put('files/', $data['file']);
-        File::create([
-            'title'=>$file->getClientOriginalName(),
-            'path'=>$path,
-            'mime_type'=>$file->getClientOriginalExtension(),
-
-        ]);
-        dd($data);
+        $dataFile = $data['file'];
+        $path = File::createFile($dataFile);
+        dd($path);
     }
 }
