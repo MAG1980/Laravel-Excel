@@ -14,6 +14,11 @@ class ProjectImport implements ToCollection
     {
         foreach ($collection as $row) {
             dd($row);
+
+           /* // Чтобы отсечь пустые строки
+            if ($row-isNonEmptyString()){}*/
+
+
         }
     }
 }
