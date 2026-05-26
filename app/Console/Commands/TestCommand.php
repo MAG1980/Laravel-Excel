@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Imports\ProjectImport;
+use App\Imports\ProjectsImport;
 use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -28,7 +28,7 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        Excel::import(new ProjectImport(), 'files/projects.xlsx', 'public');
+        Excel::import(new ProjectsImport, 'files/projects.xlsx', 'public');
         dd('Test Command Success');
     }
 }

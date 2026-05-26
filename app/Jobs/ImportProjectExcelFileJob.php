@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Imports\ProjectImport;
+use App\Imports\ProjectsImport;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Maatwebsite\Excel\Facades\Excel;
@@ -28,6 +28,6 @@ class ImportProjectExcelFileJob implements ShouldQueue
     public function handle(): void
     {
         // disk='public':'s3'
-        Excel::import(new ProjectImport(), $this->path, 'public');
+        Excel::import(new ProjectsImport,$this->path, 'public');
     }
 }

@@ -2,23 +2,21 @@
 
 namespace App\Imports;
 
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
+use App\Models\Project;
+use Maatwebsite\Excel\Concerns\ToModel;
 
-class ProjectImport implements ToCollection
+class ProjectImport implements ToModel
 {
     /**
-     * @param Collection $collection
-     */
-    public function collection(Collection $collection)
+    * @param array $row
+    *
+    * @return \Illuminate\Database\Eloquent\Model|null
+    */
+    public function model(array $row)
     {
-        foreach ($collection as $row) {
-            dd($row);
-
-           /* // Чтобы отсечь пустые строки
-            if ($row-isNonEmptyString()){}*/
-
-
-        }
+        dump($row);
+        return new Project([
+            //
+        ]);
     }
 }
