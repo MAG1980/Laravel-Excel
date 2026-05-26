@@ -11,9 +11,12 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class ProjectsImport implements ToCollection
 {
-    private function StringToBoolean(string|null $word): bool
+    private function StringToBoolean(string|null $word): bool|null
     {
-        return $word === 'Да';
+        if (isset($word)) {
+            return mb_strtolower($word) === 'да';
+        }
+        return null;
     }
 
     /**
@@ -67,19 +70,19 @@ class ProjectsImport implements ToCollection
                 'title' => $row[1],
                 'created_at_date' => $this->ExcelDateToDate($row[2]),
                 'is_network' => $this->StringToBoolean($row[3]),
-                'worker_count' => $row[4],
+                'worker_count' => $row[4] ?? null,
                 'has_outsource' => $this->StringToBoolean($row[5]),
                 'has_investors' => $this->StringToBoolean($row[6]),
-                'deadline' => $this->ExcelDateToDate($row[7]),
+                'deadline' => isset($row[7]) ? $this->ExcelDateToDate($row[7]) : null,
                 'is_on_time' => $this->StringToBoolean($row[8]),
-                'payment_first_step' => $row[9],
-                'payment_second_step' => $row[10],
-                'payment_third_step' => $row[11],
-                'payment_fourth_step' => $row[12],
+                'payment_first_step' => $row[9] ?? null,
+                'payment_second_step' => $row[10] ?? null,
+                'payment_third_step' => $row[11] ?? null,
+                'payment_fourth_step' => $row[12] ?? null,
                 'contracted_at' => $this->ExcelDateToDate($row[13]),
-                'service_count' => $row[14],
-                'comment' => $row[15],
-                'efficiency' => $row[16],
+                'service_count' => $row[14] ?? null,
+                'comment' => $row[15] ?? null,
+                'efficiency' => $row[16] ?? null,
             ]);
         }
     }
