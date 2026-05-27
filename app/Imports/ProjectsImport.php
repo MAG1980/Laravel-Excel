@@ -3,12 +3,17 @@
 namespace App\Imports;
 
 use App\Factories\ProjectFactory;
+use App\Models\FailedRow;
 use App\Models\Project;
 use App\Models\Type;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Validators\Failure;
 
-class ProjectsImport implements ToCollection
+class ProjectsImport implements ToCollection, WithValidation, SkipsOnFailure, SkipsEmptyRows
 {
     private function getTypesMap($types): array
     {
@@ -30,7 +35,7 @@ class ProjectsImport implements ToCollection
                 continue;
             }
 
-            dump($row[2]);
+            dump($row);
 
             $project = ProjectFactory::make($types, $row->toArray());
 
@@ -42,5 +47,72 @@ class ProjectsImport implements ToCollection
                 'created_at_date' => $project['created_at_date'],
             ], $project);
         }
+    }
+
+    public function rules(): array
+    {
+        return [
+            0 => 'required|string',
+            1 => 'required|string',
+            2 => 'required|integer',
+            3 => 'nullable|string',
+            4 => 'integer',
+            5 => 'nullable|string',
+            6 => 'nullable|string',
+            7 => 'nullable|integer',
+            8 => 'nullable|string',
+            9 => 'nullable|integer',
+            10 => 'nullable|integer',
+            11 => 'nullable|integer',
+            12 => 'nullable|integer',
+            13 => 'required|integer',
+            14 => 'nullable|integer',
+            15 => 'nullable|string',
+            16 => 'nullable|numeric',
+
+        ];
+    }
+
+    public function onFailure(Failure ...$failures)
+    {
+        $map = [];
+        foreach ($failures as $failure) {
+            foreach ($failure->errors() as $error) {
+                $map[] = [
+                    'key' => $failure->attribute(),
+                    'row' => $failure->row(),
+                    'message' => $error,
+                    // Временный ID задачи (для тестирования)
+                    'task_id' => 1
+                ];
+            }
+        }
+
+        if (count($map)) {
+            FailedRow::insertFailedRows($map);
+        }
+    }
+
+
+    /**
+     * @param array $row
+     * @return bool
+     */
+    public function isEmptyWhen(array $row): bool
+    {
+        // Если в столбце 'Тип' отсутствуют данные или это строка-заголовок таблицы,
+        // строка считается пустой для предотвращения ложных ошибок валидации.
+        return empty($row['0']) || $row[0] === 'Тип';
+    }
+
+    /** Кастомные сообщения валидации
+     * @return string[]
+     */
+    public function customValidationMessages(): array
+    {
+        return [
+            '0.string' => 'Тип данных type_id должен быть string',
+            '2.integer' => 'Тип данных created_at_date должен быть integer',
+        ];
     }
 }
