@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Factories\ProjectFactory;
 use App\Models\FailedRow;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\Type;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
@@ -15,6 +16,16 @@ use Maatwebsite\Excel\Validators\Failure;
 
 class ProjectsImport implements SkipsEmptyRows, SkipsOnFailure, ToCollection, WithValidation
 {
+    private Task $task;
+
+    /**
+     * @param $task
+     */
+    public function __construct($task)
+    {
+        $this->task = $task;
+    }
+
     private function getTypesMap($types): array
     {
         $map = [];
@@ -74,10 +85,10 @@ class ProjectsImport implements SkipsEmptyRows, SkipsOnFailure, ToCollection, Wi
 
     public function onFailure(Failure ...$failures)
     {
-        $map = [];
+        $failuresMap = [];
         foreach ($failures as $failure) {
             foreach ($failure->errors() as $error) {
-                $map[] = [
+                $failuresMap[] = [
                     'key' => $this->getAttributeName($failure->attribute()),
                     'row' => $failure->row(),
                     'message' => $error,
@@ -87,8 +98,13 @@ class ProjectsImport implements SkipsEmptyRows, SkipsOnFailure, ToCollection, Wi
             }
         }
 
-        if (count($map)) {
-            FailedRow::insertFailedRows($map);
+        // Сохраняем информацию об ошибках в БД.
+        if (count($failuresMap)) {
+            $this->task->update([
+                'status' => Task::STATUS_FAILED,
+            ]);
+
+            FailedRow::insertFailedRows($failuresMap, $this->task);
         }
     }
 

@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-   protected $guarded = [];
-   protected $table = 'tasks';
+    protected $guarded = [];
+    protected $table = 'tasks';
+
+    const STATUS_IN_PROGRESS = 1;
+    const STATUS_SUCCESS = 2;
+    const STATUS_FAILED = 3;
 }
