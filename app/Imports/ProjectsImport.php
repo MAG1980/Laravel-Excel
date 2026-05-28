@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Validators\Failure;
 
-class ProjectsImport implements ToCollection, WithValidation, SkipsOnFailure, SkipsEmptyRows
+class ProjectsImport implements SkipsEmptyRows, SkipsOnFailure, ToCollection, WithValidation
 {
     private function getTypesMap($types): array
     {
@@ -69,7 +69,6 @@ class ProjectsImport implements ToCollection, WithValidation, SkipsOnFailure, Sk
             14 => 'nullable|integer',
             15 => 'nullable|string',
             16 => 'nullable|numeric',
-
         ];
     }
 
@@ -79,11 +78,11 @@ class ProjectsImport implements ToCollection, WithValidation, SkipsOnFailure, Sk
         foreach ($failures as $failure) {
             foreach ($failure->errors() as $error) {
                 $map[] = [
-                    'key' => $failure->attribute(),
+                    'key' => $this->getAttributeName($failure->attribute()),
                     'row' => $failure->row(),
                     'message' => $error,
                     // Временный ID задачи (для тестирования)
-                    'task_id' => 1
+                    'task_id' => 1,
                 ];
             }
         }
@@ -93,11 +92,6 @@ class ProjectsImport implements ToCollection, WithValidation, SkipsOnFailure, Sk
         }
     }
 
-
-    /**
-     * @param array $row
-     * @return bool
-     */
     public function isEmptyWhen(array $row): bool
     {
         // Если в столбце 'Тип' отсутствуют данные или это строка-заголовок таблицы,
@@ -114,5 +108,30 @@ class ProjectsImport implements ToCollection, WithValidation, SkipsOnFailure, Sk
             '0.string' => 'Тип данных type_id должен быть string',
             '2.integer' => 'Тип данных created_at_date должен быть integer',
         ];
+    }
+
+    private function getAttributeName(int $attribute): string
+    {
+        $map = [
+            0 => 'Тип',
+            1 => 'Заголовок',
+            2 => 'Дата заключения договора',
+            3 => 'Сетевик',
+            4 => 'Количество сотрудников',
+            5 => 'Аутсорс',
+            6 => 'Инвесторы',
+            7 => 'Дедлайн',
+            8 => 'Закончен в срок',
+            9 => 'Оплата первого этапа',
+            10 => 'Оплата второго этапа',
+            11 => 'Оплата третьего этапа',
+            12 => 'Оплата четвёртого этапа',
+            13 => 'Законтрактован',
+            14 => 'Количество услуг',
+            15 => 'Комментарий',
+            16 => 'Эффективность',
+        ];
+
+        return $map[$attribute];
     }
 }
