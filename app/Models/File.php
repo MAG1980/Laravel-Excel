@@ -15,7 +15,7 @@ class File extends Model
     /**
      * Сохраняет файл на диск и возвращает путь.
      *
-     * @param  UploadedFile  $dataFile
+     * @param UploadedFile $dataFile
      *
      * @throws \Exception
      */
@@ -32,20 +32,18 @@ class File extends Model
     /**
      * Сохраняет информацию о файле в БД.
      *
-     * @param  UploadedFile  $dataFile
+     * @param UploadedFile $dataFile
      *
      * @throws \Exception
      */
-    public static function createFile($dataFile): string
+    public static function createFile($dataFile)
     {
         $path = self::getPath($dataFile);
 
-        self::create([
-            'title' => $dataFile->getClientOriginalName(),
+        return File::create([
             'path' => $path,
+            'title' => $dataFile->getClientOriginalName(),
             'mime_type' => $dataFile->getClientMimeType(),
         ]);
-
-        return $path;
     }
 }
