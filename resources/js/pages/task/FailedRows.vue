@@ -1,36 +1,29 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
-import {
-    index as tasksIndex,
-    failedRows as failedRowsRoute,
-} from '@/routes/tasks';
+import { index as tasksIndex } from '@/routes/tasks';
 import type { BreadcrumbItem } from '@/types';
 
-type User = {
-    id: number;
-    name: string;
-};
 
-interface Task {
+interface FailedRow {
     id: number;
-    user: User;
-    file: { path: string };
-    status: string;
-    failedRowsCount:number;
+    taskId: string;
+    rowNumber: number;
+    key: string;
+    message: string;
     createdAt: string;
     updatedAt: string;
 }
 
-const { tasks } = defineProps<{
-    tasks: { data: Task[] };
+const { failedRows } = defineProps<{
+    failedRows: { data: FailedRow[] };
 }>();
 
-const { data }: { data: Task[] } = tasks;
+const { data }: { data: FailedRow[] } = failedRows;
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Tasks',
+        title: 'failed Rows',
         href: tasksIndex().url,
     },
 ];
@@ -38,7 +31,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 console.log(data);
 </script>
 <template>
-    <Head title="Tasks" />
+    <Head title="Failed Rows" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
             class="flex flex-col gap-1 rounded-xl bg-gray-950/5 p-1 inset-ring inset-ring-gray-950/5 dark:bg-white/10 dark:inset-ring-white/10"
@@ -46,7 +39,8 @@ console.log(data);
             <div
                 class="not-prose overflow-auto rounded-lg bg-white p-2 outline outline-white/5 dark:bg-gray-950/50"
             >
-                <h1 class="mb-4 text-center text-2xl font-bold">Tasks</h1>
+                <h1 class="mb-4 text-center text-2xl font-bold">Failed Rows</h1>
+
                 <table class="w-full table-fixed border-collapse text-sm">
                     <thead>
                         <tr>
@@ -58,22 +52,22 @@ console.log(data);
                             <th
                                 class="border-b border-gray-200 p-4 pt-0 pb-3 pl-8 text-left font-medium text-gray-400 dark:border-gray-600 dark:text-gray-200"
                             >
-                                User ID
+                                Task ID
                             </th>
                             <th
                                 class="border-b border-gray-200 p-4 pt-0 pb-3 pl-8 text-left font-medium break-all text-gray-400 dark:border-gray-600 dark:text-gray-200"
                             >
-                                File Path
+                                Row Number
                             </th>
                             <th
                                 class="border-b border-gray-200 p-4 pt-0 pb-3 pl-8 text-left font-medium text-gray-400 dark:border-gray-600 dark:text-gray-200"
                             >
-                                Status
+                                Key
                             </th>
                             <th
                                 class="border-b border-gray-200 p-4 pt-0 pb-3 pl-8 text-left font-medium text-gray-400 dark:border-gray-600 dark:text-gray-200"
                             >
-                                Failed Rows
+                                Message
                             </th>
                             <th
                                 class="border-b border-gray-200 p-4 pt-0 pb-3 pl-8 text-left font-medium text-gray-400 dark:border-gray-600 dark:text-gray-200"
@@ -88,52 +82,48 @@ console.log(data);
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800">
-                        <tr v-for="task of data" :key="task.id">
+                        <tr v-for="failedRow of data" :key="failedRow.id">
                             <td
                                 class="border-b border-gray-100 p-4 pl-8 text-gray-500 dark:border-gray-700 dark:text-gray-400"
                             >
-                                {{ task.id }}
+                                {{ failedRow.id }}
                             </td>
                             <td
                                 class="border-b border-gray-100 p-4 pl-8 text-gray-500 dark:border-gray-700 dark:text-gray-400"
                             >
-                                {{ task.user.id }}
+                                {{ failedRow.taskId }}
+                            </td>
+                            <td
+                                class="border-b border-gray-100 p-4 pl-8 text-gray-500 dark:border-gray-700 dark:text-gray-400"
+                            >
+                                {{ failedRow.rowNumber }}
                             </td>
                             <td
                                 class="border-b border-gray-100 p-4 pl-8 break-all text-gray-500 dark:border-gray-700 dark:text-gray-400"
                             >
-                                {{ task.file.path }}
+                                {{ failedRow.key }}
                             </td>
                             <td
                                 class="border-b border-gray-100 p-4 pl-8 text-gray-500 dark:border-gray-700 dark:text-gray-400"
                             >
-                                {{ task.status }}
-                            </td>
-                            <td
-                                class="border-b border-gray-100 p-4 pl-8 text-gray-500 dark:border-gray-700 dark:text-gray-400"
-                            >
-                                <Link
-                                    class="border rounded-md py-2 px-4 border-red-500 text-red-500 dark:text-red-400"
-                                    v-if="task.failedRowsCount"
-                                    :href="
-                                        failedRowsRoute.url({ taskId: task.id })
-                                    "
-                                    >View Failed Rows
-                                </Link>
+                                {{ failedRow.message }}
                             </td>
                             <td
                                 class="border-b border-gray-100 p-4 pl-8 break-all text-gray-500 dark:border-gray-700 dark:text-gray-400"
                             >
-                                {{ new Date(task.createdAt).toLocaleString() }}
+                                {{ new Date(failedRow.createdAt).toLocaleString() }}
                             </td>
                             <td
                                 class="border-b border-gray-100 p-4 pl-8 break-all text-gray-500 dark:border-gray-700 dark:text-gray-400"
                             >
-                                {{ new Date(task.updatedAt).toLocaleString() }}
+                                {{ new Date(failedRow.updatedAt).toLocaleString() }}
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <div class="flex justify-end m-4">
+                    <Link :href="tasksIndex().url" class="border rounded-md py-2 px-4 border-blue-500 text-blue-500 dark:text-blue-400">Back to Tasks</Link>
+                </div>
             </div>
         </div>
     </AppLayout>

@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Task;
+namespace App\Http\Resources\FailedRow;
 
-use App\Http\Resources\File\FileResource;
-use App\Http\Resources\User\UserResource;
-use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TaskResource extends JsonResource
+class FailedRowResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,12 +14,14 @@ class TaskResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+//        return parent::toArray($request);
+
         return [
             'id' => $this->id,
-            'user' => new UserResource($this->user),
-            'file' => new FileResource($this->file),
-            'status' => Task::getStatus($this->status),
-            'failedRowsCount' => $this->failed_rows_count,
+            'taskId' => $this->task_id,
+            'rowNumber' => $this->row,
+            'key' => $this->key,
+            'message' => $this->message,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

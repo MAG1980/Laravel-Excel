@@ -93,7 +93,7 @@ class ProjectsImport implements SkipsEmptyRows, SkipsOnFailure, ToCollection, Wi
                     'row' => $failure->row(),
                     'message' => $error,
                     // Временный ID задачи (для тестирования)
-                    'task_id' => 1,
+                    'task_id' => $this->task->id,
                 ];
             }
         }

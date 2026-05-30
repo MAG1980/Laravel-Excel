@@ -22,6 +22,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/projects/import', [ProjectController::class, 'importStore'])->name('projects.import.store');
 
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::get('/tasks/failed-rows/{taskId}', [TaskController::class, 'failedRows'])->name('tasks.failed-rows');
 });
 
 
