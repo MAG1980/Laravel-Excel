@@ -23,6 +23,10 @@ const { data, meta } = failedRows;
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+        title: 'Tasks',
+        href: tasksIndex().url,
+    },
+    {
         title: 'failed Rows',
         href: tasksIndex().url,
     },
