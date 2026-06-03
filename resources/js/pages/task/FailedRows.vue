@@ -28,7 +28,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-console.log(failedRows);
 </script>
 <template>
     <Head title="Failed Rows" />

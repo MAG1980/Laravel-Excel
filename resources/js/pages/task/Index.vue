@@ -36,7 +36,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-console.log(tasks);
 </script>
 <template>
     <Head title="Tasks" />
