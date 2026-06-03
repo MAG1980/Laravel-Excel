@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import Pagination from '@/components/ui/pagination/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { index as tasksIndex } from '@/routes/tasks';
-import type { BreadcrumbItem } from '@/types';
-
+import type { BreadcrumbItem, Meta } from '@/types';
 
 interface FailedRow {
     id: number;
@@ -16,10 +16,10 @@ interface FailedRow {
 }
 
 const { failedRows } = defineProps<{
-    failedRows: { data: FailedRow[] };
+    failedRows: { data: FailedRow[]; meta: Meta };
 }>();
 
-const { data }: { data: FailedRow[] } = failedRows;
+const { data, meta } = failedRows;
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -28,7 +28,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-console.log(data);
+console.log(failedRows);
 </script>
 <template>
     <Head title="Failed Rows" />
@@ -111,20 +111,33 @@ console.log(data);
                             <td
                                 class="border-b border-gray-100 p-4 pl-8 break-all text-gray-500 dark:border-gray-700 dark:text-gray-400"
                             >
-                                {{ new Date(failedRow.createdAt).toLocaleString() }}
+                                {{
+                                    new Date(
+                                        failedRow.createdAt,
+                                    ).toLocaleString()
+                                }}
                             </td>
                             <td
                                 class="border-b border-gray-100 p-4 pl-8 break-all text-gray-500 dark:border-gray-700 dark:text-gray-400"
                             >
-                                {{ new Date(failedRow.updatedAt).toLocaleString() }}
+                                {{
+                                    new Date(
+                                        failedRow.updatedAt,
+                                    ).toLocaleString()
+                                }}
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="flex justify-end m-4">
-                    <Link :href="tasksIndex().url" class="border rounded-md py-2 px-4 border-blue-500 text-blue-500 dark:text-blue-400">Back to Tasks</Link>
+                <div class="m-4 flex justify-end">
+                    <Link
+                        :href="tasksIndex().url"
+                        class="rounded-md border border-blue-500 px-4 py-2 text-blue-500 dark:text-blue-400"
+                        >Back to Tasks
+                    </Link>
                 </div>
             </div>
+            <Pagination :meta="meta" />
         </div>
     </AppLayout>
 </template>

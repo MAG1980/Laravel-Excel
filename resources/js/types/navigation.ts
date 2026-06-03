@@ -12,3 +12,21 @@ export type NavItem = {
     icon?: LucideIcon;
     isActive?: boolean;
 };
+
+export type Meta = {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: Link[];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+};
+
+export type Link = {
+    url: string | null;
+    label: string;
+    active: boolean;
+    page: number | null;
+};

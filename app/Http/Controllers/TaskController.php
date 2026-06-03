@@ -19,7 +19,7 @@ class TaskController extends Controller
         return Inertia::render('task/Index', ['tasks' => $tasks->toArray()]);
         */
 
-        $tasks = Task::with(['user', 'file'])->withCount('failedRows')->get();
+        $tasks = Task::with(['user', 'file'])->withCount('failedRows')->paginate(3);
         $tasks = TaskResource::collection($tasks);
 
 //        return Inertia::render('task/Index', compact('tasks'));
@@ -29,7 +29,7 @@ class TaskController extends Controller
 
     public function failedRows(int $taskId)
     {
-        $failedRows = FailedRow::where('task_id', (int)$taskId)->get();
+        $failedRows = FailedRow::where('task_id', (int)$taskId)->paginate(2);
         $failedRows = FailedRowResource::collection($failedRows);
 
         return Inertia::render('task/FailedRows', compact('failedRows'));

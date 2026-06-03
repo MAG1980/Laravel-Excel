@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import Pagination from '@/components/ui/pagination/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import {
     index as tasksIndex,
     failedRows as failedRowsRoute,
 } from '@/routes/tasks';
-import type { BreadcrumbItem } from '@/types';
+import type { BreadcrumbItem, Meta } from '@/types';
 
 type User = {
     id: number;
@@ -17,16 +18,16 @@ interface Task {
     user: User;
     file: { path: string };
     status: string;
-    failedRowsCount:number;
+    failedRowsCount: number;
     createdAt: string;
     updatedAt: string;
 }
 
 const { tasks } = defineProps<{
-    tasks: { data: Task[] };
+    tasks: { data: Task[]; meta: Meta };
 }>();
 
-const { data }: { data: Task[] } = tasks;
+const { data, meta }: { data: Task[]; meta: Meta } = tasks;
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -35,7 +36,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-console.log(data);
+console.log(tasks);
 </script>
 <template>
     <Head title="Tasks" />
@@ -113,7 +114,7 @@ console.log(data);
                                 class="border-b border-gray-100 p-4 pl-8 text-gray-500 dark:border-gray-700 dark:text-gray-400"
                             >
                                 <Link
-                                    class="border rounded-md py-2 px-4 border-red-500 text-red-500 dark:text-red-400"
+                                    class="rounded-md border border-red-500 px-4 py-2 text-red-500 dark:text-red-400"
                                     v-if="task.failedRowsCount"
                                     :href="
                                         failedRowsRoute.url({ taskId: task.id })
@@ -134,6 +135,8 @@ console.log(data);
                         </tr>
                     </tbody>
                 </table>
+
+                <Pagination :meta="meta" />
             </div>
         </div>
     </AppLayout>
