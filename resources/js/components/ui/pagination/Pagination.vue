@@ -7,8 +7,10 @@ const { meta } = defineProps<{ meta: Meta }>();
 
 // Извлекаем ссылки из meta
 const links = computed(() => meta.links || []);
+const currentPage = computed(() => meta.current_page ?? 1);
+const totalPages = computed(() => meta.last_page ?? 1);
 
-// Находим ссылку "Previous" и "Next" по label
+// Находим ссылки "Previous" и "Next"
 const prevPageUrl = computed(() => {
     const prevLink = links.value.find(link => link.label === '&laquo; Previous');
     return prevLink?.url || null;
@@ -19,9 +21,61 @@ const nextPageUrl = computed(() => {
     return nextLink?.url || null;
 });
 
-// Фильтруем только основные ссылки страниц (исключая "Previous" и "Next")
-const pageLinks = computed(() => {
-    return links.value.filter(link => link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;');
+// Сопоставление номера страницы с URL из оригинальных ссылок
+const pageUrlMap = computed(() => {
+    const map = new Map<string, string | null>();
+    links.value.forEach(link => {
+        if (link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;' && link.label !== '...') {
+            map.set(link.label, link.url);
+        }
+    });
+    return map;
+});
+
+// Генерация списка страниц с двумя соседями, первой, последней и многоточиями
+const customPageLinks = computed(() => {
+    const pages: { label: string; url: string | null; active: boolean }[] = [];
+    if (totalPages.value <= 1) return pages;
+
+    // Первая страница
+    pages.push({
+        label: '1',
+        url: pageUrlMap.value.get('1') || null,
+        active: currentPage.value === 1
+    });
+
+    let start = Math.max(2, currentPage.value - 2);
+    let end = Math.min(totalPages.value - 1, currentPage.value + 2);
+
+    // Многоточие после первой, если есть разрыв
+    if (start > 2) {
+        pages.push({ label: '...', url: null, active: false });
+    }
+
+    // Соседние страницы
+    for (let i = start; i <= end; i++) {
+        pages.push({
+            label: i.toString(),
+            url: pageUrlMap.value.get(i.toString()) || null,
+            active: currentPage.value === i
+        });
+    }
+
+    // Многоточие перед последней, если есть разрыв
+    if (end < totalPages.value - 1) {
+        pages.push({ label: '...', url: null, active: false });
+    }
+
+    // Последняя страница
+    if (totalPages.value > 1) {
+        pages.push({
+            label: totalPages.value.toString(),
+            url: pageUrlMap.value.get(totalPages.value.toString()) || null,
+            active: currentPage.value === totalPages.value
+        });
+    }
+
+    return pages;
 });
 </script>
 
@@ -66,7 +120,7 @@ const pageLinks = computed(() => {
             </div>
 
             <nav aria-label="Pagination" class="isolate inline-flex -space-x-px rounded-md shadow-xs">
-                <!-- Previous link (left arrow) -->
+                <!-- Previous -->
                 <Link
                     v-if="prevPageUrl"
                     :href="prevPageUrl"
@@ -77,16 +131,14 @@ const pageLinks = computed(() => {
                 >
                     <span class="sr-only">Previous</span>
                     <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-5">
-                        <path
-                            d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" />
+                        <path d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" />
                     </svg>
                 </Link>
 
-                <!-- Нумерация страниц -->
-                <template v-for="link in pageLinks" :key="link.label">
-                    <!-- Если ссылка активна и есть url -->
+                <!-- Кастомная нумерация страниц -->
+                <template v-for="link in customPageLinks" :key="link.label">
                     <Link
-                        v-if="link.url"
+                        v-if="link.url && link.label !== '...'"
                         :href="link.url"
                         :aria-current="link.active ? 'page' : undefined"
                         :class="[
@@ -98,16 +150,15 @@ const pageLinks = computed(() => {
                     >
                         {{ link.label }}
                     </Link>
-                    <!-- Если url = null (например, разделитель "...") -->
                     <span
-                        v-else
+                        v-else-if="link.label === '...'"
                         class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0"
                     >
                         {{ link.label }}
                     </span>
                 </template>
 
-                <!-- Next link (right arrow) -->
+                <!-- Next -->
                 <Link
                     v-if="nextPageUrl"
                     :href="nextPageUrl"
@@ -118,8 +169,7 @@ const pageLinks = computed(() => {
                 >
                     <span class="sr-only">Next</span>
                     <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-5">
-                        <path
-                            d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" />
+                        <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" />
                     </svg>
                 </Link>
             </nav>
