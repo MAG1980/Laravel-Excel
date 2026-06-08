@@ -30,7 +30,8 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        Excel::import(new ProjectsDynamicImport(Task::find(5)), 'files/projects2.xlsx', 'public');
+        $task = Task::create();
+        Excel::import(new ProjectsDynamicImport($task), 'files/projects2.xlsx', 'public');
         dump('Test Command Success');
         return CommandAlias::SUCCESS;
     }

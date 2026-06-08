@@ -3,7 +3,6 @@
 namespace App\Imports;
 
 use App\Factories\ProjectDynamicFactory;
-use App\Models\FailedRow;
 use App\Models\Payment;
 use App\Models\Project;
 use App\Models\Task;
@@ -92,7 +91,7 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
                 'created_at_date' => $project['created_at_date'],
             ], $project);
 
-            if (!isset($dynamicProps)) {
+            if (! isset($dynamicProps)) {
                 continue;
             }
 
@@ -133,7 +132,7 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
 
     public function onFailure(Failure ...$failures)
     {
-         processFailures($failures, $this->getAttributeNameMap(), $this->task);
+        processFailures($failures, $this->getAttributeNameMap(), $this->task);
 
     }
 
@@ -175,7 +174,7 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
 
         $dynamicAttributesMap = $this->getDynamicAttributeNames();
 
-        return  array_replace($staticAttributesMap, $dynamicAttributesMap);
+        return array_replace($staticAttributesMap, $dynamicAttributesMap);
     }
 
     public function startRow(): int
