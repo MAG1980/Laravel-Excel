@@ -133,27 +133,8 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
 
     public function onFailure(Failure ...$failures)
     {
-        $failuresMap = [];
-        foreach ($failures as $failure) {
-            foreach ($failure->errors() as $error) {
-                $failuresMap[] = [
-                    'key' => $this->getAttributeNames($failure->attribute()),
-                    'row' => $failure->row(),
-                    'message' => $error,
-                    // Временный ID задачи (для тестирования)
-                    'task_id' => $this->task->id,
-                ];
-            }
-        }
+         processFailures($failures, $this->getAttributeNameMap(), $this->task);
 
-        // Сохраняем информацию об ошибках в БД.
-        if (count($failuresMap)) {
-            $this->task->update([
-                'status' => Task::STATUS_FAILED,
-            ]);
-
-            FailedRow::insertFailedRows($failuresMap, $this->task);
-        }
     }
 
     public function isEmptyWhen(array $row): bool
@@ -174,7 +155,7 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
         ];
     }
 
-    private function getAttributeNames(int $attributeColumnNumber): string
+    public function getAttributeNameMap(): array
     {
         $staticAttributesMap = [
             0 => 'Тип',
@@ -194,9 +175,7 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
 
         $dynamicAttributesMap = $this->getDynamicAttributeNames();
 
-        $resultAttributesMap = array_replace($staticAttributesMap, $dynamicAttributesMap);;
-
-        return $resultAttributesMap[$attributeColumnNumber];
+        return  array_replace($staticAttributesMap, $dynamicAttributesMap);
     }
 
     public function startRow(): int
