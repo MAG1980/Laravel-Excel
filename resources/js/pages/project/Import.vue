@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
+import {index as indexProjects} from '@/routes/projects';
 import {
     show as importShow,
     store as importStore,
@@ -60,6 +61,8 @@ const storeFile = () => {
             if (refInputFile.value) {
                 refInputFile.value.value = '';
             }
+
+            router.visit(indexProjects().url)
         },
 
         onError: (errors) => {
