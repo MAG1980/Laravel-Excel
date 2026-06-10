@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Imports\ProjectsDynamicImport;
 use App\Imports\ProjectsImport;
 use App\Models\Task;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,7 +20,7 @@ class ImportProjectExcelFileJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct($path, $task)
+    public function __construct($path, Task $task)
     {
         //
         $this->path = $path;
@@ -35,7 +36,21 @@ class ImportProjectExcelFileJob implements ShouldQueue
             'status' => Task::STATUS_SUCCESS,
         ]);
 
+        $methodName = 'import'.$this->task->type;
+        $this->$methodName();
+
+    }
+
+    private function import1()
+    {dump('import1');
         // disk='public':'s3'
         Excel::import(new ProjectsImport($this->task), $this->path, 'public');
+    }
+
+    private function import2()
+    {
+        dump('import2');
+        // disk='public':'s3'
+        Excel::import(new ProjectsDynamicImport($this->task), $this->path, 'public');
     }
 }

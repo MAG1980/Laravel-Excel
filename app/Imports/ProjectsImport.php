@@ -18,9 +18,6 @@ class ProjectsImport implements SkipsEmptyRows, SkipsOnFailure, ToCollection, Wi
 {
     private Task $task;
 
-    /**
-     * @param $task
-     */
     public function __construct($task)
     {
         $this->task = $task;
@@ -46,8 +43,6 @@ class ProjectsImport implements SkipsEmptyRows, SkipsOnFailure, ToCollection, Wi
                 continue;
             }
 
-            dump($row);
-
             $project = ProjectFactory::make($types, $row->toArray());
 
             Project::updateOrCreate([
@@ -62,7 +57,7 @@ class ProjectsImport implements SkipsEmptyRows, SkipsOnFailure, ToCollection, Wi
 
     public function rules(): array
     {
-        return [
+        $rules = [
             0 => 'required|string',
             1 => 'required|string',
             2 => 'required|integer',
@@ -81,6 +76,8 @@ class ProjectsImport implements SkipsEmptyRows, SkipsOnFailure, ToCollection, Wi
             15 => 'nullable|string',
             16 => 'nullable|numeric',
         ];
+
+        return $rules;
     }
 
     public function onFailure(Failure ...$failures)

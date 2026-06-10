@@ -12,7 +12,6 @@ if (!function_exists('processFailures')){
                     'key' => $attributesNames[$failure->attribute()],
                     'row' => $failure->row(),
                     'message' => $error,
-                    // Временный ID задачи (для тестирования)
                     'task_id' => $task->id,
                 ];
             }

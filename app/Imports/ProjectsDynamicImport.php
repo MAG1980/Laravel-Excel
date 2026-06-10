@@ -72,6 +72,7 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
 
     public function collection(Collection $collection)
     {
+        dump($collection);
         $types = $this->getTypesMap(Type::all());
 
         foreach ($collection as $row) {
@@ -91,7 +92,7 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
                 'created_at_date' => $project['created_at_date'],
             ], $project);
 
-            if (! isset($dynamicProps)) {
+            if (!isset($dynamicProps)) {
                 continue;
             }
 
@@ -113,7 +114,7 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
         // Сравнивает ключи и заменяет значения значениями из второго массива,
         // но в нашем случае ключи не повторяются, поэтому получаем массив, содержащий
         // значения обоих массивов, даже разреженных.
-        return array_replace([
+        $rules = array_replace([
             0 => 'required|string',
             1 => 'required|string',
             2 => 'required|integer',
@@ -128,6 +129,8 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
             11 => 'nullable|string',
             12 => 'nullable|string',
         ], $this->getDynamicValidationRules());
+
+        return $rules;
     }
 
     public function onFailure(Failure ...$failures)
@@ -136,12 +139,12 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
 
     }
 
-    public function isEmptyWhen(array $row): bool
-    {
-        // Если в столбце 'Тип' отсутствуют данные или это строка-заголовок таблицы,
-        // строка считается пустой для предотвращения ложных ошибок валидации.
-        return empty($row['0']) || $row[0] === 'Тип';
-    }
+    /*    public function isEmptyWhen(array $row): bool
+        {
+            // Если в столбце 'Тип' отсутствуют данные или это строка-заголовок таблицы,
+            // строка считается пустой для предотвращения ложных ошибок валидации.
+            return empty($row[0]) || $row[0] === 'Тип';
+        }*/
 
     /** Кастомные сообщения валидации
      * @return string[]
@@ -150,6 +153,7 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
     {
         return [
             '0.string' => 'Тип данных type_id должен быть string',
+            '1.required' => 'Наличие заголовка обязательно',
             '2.integer' => 'Тип данных created_at_date должен быть integer',
         ];
     }

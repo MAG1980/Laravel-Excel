@@ -25,6 +25,7 @@ class ProjectController extends Controller
             'user_id' => auth()->id(),
             'file_id' => $file->id,
             'status' => Task::STATUS_IN_PROGRESS,
+            'type' => $data['type'],
         ]);
 
 
