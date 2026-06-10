@@ -72,7 +72,6 @@ class ProjectsDynamicImport implements SkipsOnFailure, ToCollection, WithEvents,
 
     public function collection(Collection $collection)
     {
-        dump($collection);
         $types = $this->getTypesMap(Type::all());
 
         foreach ($collection as $row) {
