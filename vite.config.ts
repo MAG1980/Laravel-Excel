@@ -31,4 +31,15 @@ export default defineConfig({
             '@spa': path.resolve(__dirname, 'resources/js/spa'),
         },
     },
+    build: {
+        // явно указываем выходную директорию (по умолчанию public/build)
+        outDir: 'public/build',
+        rollupOptions: {
+            // можно дополнительно настроить имена чанков
+            output: {
+                chunkFileNames: 'assets/[name]-[hash].js',
+                assetFileNames: 'assets/[name]-[hash][extname]',
+            },
+        },
+    },
 });

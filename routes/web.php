@@ -26,5 +26,10 @@ group(function () {
     Route::get('/tasks/failed-rows/{taskId}', [TaskController::class, 'failedRows'])->name('tasks.failed-rows');
 });
 
+// SPA маршрут – всё, что начинается с /spa, отдаёт шаблон spa.blade.php
+// Vue Router внутри SPA будет обрабатывать дальнейшие пути
+Route::get('/spa/{any?}', function () {
+    return view('spa');
+})->where('any', '.*')->name('spa');
 
 require __DIR__ . '/settings.php';
