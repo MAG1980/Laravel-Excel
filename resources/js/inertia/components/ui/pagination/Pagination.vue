@@ -1,0 +1,254 @@
+<script setup lang="ts">
+import type { Meta } from '@inertia/types';
+import { Link, router } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+
+const { meta } = defineProps<{ meta: Meta }>();
+
+// Извлекаем ссылки из meta
+const links = computed(() => meta.links || []);
+const currentPage = computed(() => meta.current_page ?? 1);
+const totalPages = computed(() => meta.last_page ?? 1);
+
+// Находим ссылки "Previous" и "Next"
+const prevPageUrl = computed(() => {
+    const prevLink = links.value.find(
+        (link) => link.label === '&laquo; Previous',
+    );
+    return prevLink?.url || null;
+});
+
+const nextPageUrl = computed(() => {
+    const nextLink = links.value.find((link) => link.label === 'Next &raquo;');
+    return nextLink?.url || null;
+});
+
+// Сопоставление номера страницы с URL из оригинальных ссылок
+const pageUrlMap = computed(() => {
+    const map = new Map<string, string | null>();
+    links.value.forEach((link) => {
+        if (
+            link.label !== '&laquo; Previous' &&
+            link.label !== 'Next &raquo;' &&
+            link.label !== '...'
+        ) {
+            map.set(link.label, link.url);
+        }
+    });
+    return map;
+});
+
+// Генерация списка страниц с двумя соседями, первой, последней и многоточиями
+const customPageLinks = computed(() => {
+    const pages: { label: string; url: string | null; active: boolean }[] = [];
+    if (totalPages.value <= 1) return pages;
+
+    // Первая страница
+    pages.push({
+        label: '1',
+        url: pageUrlMap.value.get('1') || null,
+        active: currentPage.value === 1,
+    });
+
+    const start = Math.max(2, currentPage.value - 2);
+    const end = Math.min(totalPages.value - 1, currentPage.value + 2);
+
+    // Многоточие после первой, если есть разрыв
+    if (start > 2) {
+        pages.push({ label: '...', url: null, active: false });
+    }
+
+    // Соседние страницы
+    for (let i = start; i <= end; i++) {
+        pages.push({
+            label: i.toString(),
+            url: pageUrlMap.value.get(i.toString()) || null,
+            active: currentPage.value === i,
+        });
+    }
+
+    // Многоточие перед последней, если есть разрыв
+    if (end < totalPages.value - 1) {
+        pages.push({ label: '...', url: null, active: false });
+    }
+
+    // Последняя страница
+    if (totalPages.value > 1) {
+        pages.push({
+            label: totalPages.value.toString(),
+            url: pageUrlMap.value.get(totalPages.value.toString()) || null,
+            active: currentPage.value === totalPages.value,
+        });
+    }
+
+    return pages;
+});
+
+// Input для перехода на страницу
+const inputPage = ref<number | null>(null);
+
+const goToPage = () => {
+    if (!inputPage.value) return;
+    if (inputPage.value && inputPage.value > totalPages.value) {
+        inputPage.value = totalPages.value;
+    }
+    let page = Number(inputPage.value);
+    if (isNaN(page)) return;
+    page = Math.min(Math.max(1, page), totalPages.value);
+    if (page === currentPage.value) return;
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('page', page.toString());
+
+    router.visit(url.toString(), {
+        preserveState: false,
+        preserveScroll: true,
+    });
+};
+</script>
+
+<template>
+    <div
+        class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+    >
+        <!-- Мобильная версия -->
+        <div class="flex flex-1 justify-between sm:hidden">
+            <Link
+                v-if="prevPageUrl"
+                :href="prevPageUrl"
+                :class="[
+                    'relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50',
+                    { 'pointer-events-none opacity-50': !prevPageUrl },
+                ]"
+            >
+                Previous
+            </Link>
+            <Link
+                v-if="nextPageUrl"
+                :href="nextPageUrl"
+                :class="[
+                    'relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50',
+                    { 'pointer-events-none opacity-50': !nextPageUrl },
+                ]"
+            >
+                Next
+            </Link>
+        </div>
+
+        <!-- Десктопная версия -->
+        <div
+            class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between"
+        >
+            <div>
+                <p class="text-sm text-gray-700">
+                    Showing
+                    <span class="font-medium">{{ meta.from ?? 0 }}</span>
+                    to
+                    <span class="font-medium">{{ meta.to ?? 0 }}</span>
+                    of
+                    <span class="font-medium">{{ meta.total ?? 0 }}</span>
+                    results
+                </p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <nav
+                    aria-label="Pagination"
+                    class="isolate inline-flex -space-x-px rounded-md shadow-xs"
+                >
+                    <!-- Previous link -->
+                    <Link
+                        v-if="prevPageUrl"
+                        :href="prevPageUrl"
+                        :class="[
+                            'relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0',
+                            { 'pointer-events-none opacity-50': !prevPageUrl },
+                        ]"
+                    >
+                        <span class="sr-only">Previous</span>
+                        <svg
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                            class="size-5"
+                        >
+                            <path
+                                d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+                            />
+                        </svg>
+                    </Link>
+
+                    <!-- Кастомная нумерация страниц -->
+                    <template v-for="link in customPageLinks" :key="link.label">
+                        <Link
+                            v-if="link.url && link.label !== '...'"
+                            :href="link.url"
+                            :aria-current="link.active ? 'page' : undefined"
+                            :class="[
+                                'relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 focus-visible:outline-2 focus-visible:outline-offset-2',
+                                link.active
+                                    ? 'z-10 bg-indigo-600 text-white focus-visible:outline-indigo-600'
+                                    : 'text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:outline-offset-0',
+                            ]"
+                        >
+                            {{ link.label }}
+                        </Link>
+                        <span
+                            v-else-if="link.label === '...'"
+                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-gray-300 ring-inset focus:outline-offset-0"
+                        >
+                            {{ link.label }}
+                        </span>
+                    </template>
+
+                    <!-- Next link -->
+                    <Link
+                        v-if="nextPageUrl"
+                        :href="nextPageUrl"
+                        :class="[
+                            'relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus:z-20 focus:outline-offset-0',
+                            { 'pointer-events-none opacity-50': !nextPageUrl },
+                        ]"
+                    >
+                        <span class="sr-only">Next</span>
+                        <svg
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                            class="size-5"
+                        >
+                            <path
+                                d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+                            />
+                        </svg>
+                    </Link>
+                </nav>
+
+                <!-- Переход на конкретную страницу -->
+                <div v-if="totalPages > 1" class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-700">Go to</span>
+                    <input
+                        v-model.number="inputPage"
+                        type="number"
+                        :min="1"
+                        :max="totalPages"
+                        :class="[
+                            'rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm',
+                            {
+                                'text-red-500':
+                                    inputPage && inputPage > totalPages,
+                            },
+                        ]"
+                        @keyup.enter="goToPage"
+                    />
+                    <button
+                        @click="goToPage"
+                        class="inline-flex items-center rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+                    >
+                        Go
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

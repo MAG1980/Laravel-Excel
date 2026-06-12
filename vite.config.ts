@@ -1,4 +1,4 @@
-import { wayfinder } from '@laravel/vite-plugin-wayfinder';
+import path from 'path';import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
@@ -7,8 +7,8 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/js/app.ts'],
-            ssr: 'resources/js/ssr.ts',
+            input: ['resources/js/inertia/app.ts'],
+            ssr: 'resources/js/inertia/ssr.ts',
             refresh: true,
         }),
         tailwindcss(),
@@ -24,4 +24,11 @@ export default defineConfig({
             },
         }),
     ],
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'resources/js'),
+            '@inertia': path.resolve(__dirname, 'resources/js/inertia'),
+            '@spa': path.resolve(__dirname, 'resources/js/spa'),
+        },
+    },
 });
