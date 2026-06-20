@@ -1,24 +1,28 @@
 // resources/js/spa/router.ts
 import { createWebHistory, createRouter } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router';
 
 // Определите массив ваших маршрутов
-const routes = [
+const routes: RouteRecordRaw[] = [
     {
         path: '/',
         name: 'home',
         // Используйте ленивую загрузку для компонентов
-        component: () => import('./pages/Home.vue')
+        component: () => import('./pages/Home.vue'),
+        meta: { title: 'Главная' }
     },
     {
         path: '/about',
         name: 'about',
-        component: () => import('./pages/About.vue')
+        component: () => import('./pages/About.vue'),
+        meta: { title: 'О компании' }
     },
     // Маршрут для страницы 404 (должен быть последним)
     {
         path: '/:pathMatch(.*)*',
         name: 'not-found',
-        component: () => import('./pages/NotFound.vue')
+        component: () => import('./pages/NotFound.vue'),
+        meta: { title: 'Страница не найдена' }
     }
 ]
 
