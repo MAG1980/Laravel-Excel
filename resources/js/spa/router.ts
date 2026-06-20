@@ -17,6 +17,29 @@ const routes: RouteRecordRaw[] = [
         component: () => import('./pages/About.vue'),
         meta: { title: 'О компании' }
     },
+    {
+        path: '/get',
+        name: 'get.index',
+        component: () => import('./pages/Get/Index.vue'),
+        meta: { title: 'Get' }
+    },
+    {
+        path: '/user',
+       children:[
+           {
+               path: 'login',
+               name: 'user.login',
+               component: () => import('./pages/user/Login.vue'),
+               meta: { title: 'Login Page' }
+           },
+           {
+               path: 'registration',
+               name: 'user.registration',
+               component: () => import('./pages/user/Registration.vue'),
+               meta: { title: 'Registration Page' }
+           },
+       ]
+    },
     // Маршрут для страницы 404 (должен быть последним)
     {
         path: '/:pathMatch(.*)*',

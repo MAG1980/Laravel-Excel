@@ -1,8 +1,11 @@
 <template>
     <div id="app">
-        <nav class="flex">
-            <router-link class="px-4" to="/">Home</router-link>
+        <nav class="flex gap-4">
+            <router-link  to="/">Home</router-link>
             <router-link to="/about">About</router-link>
+            <router-link to="/get">Get</router-link>
+            <router-link to="/user/login">Login</router-link>
+            <router-link to="/user/registration">Registration</router-link>
         </nav>
     </div>
 </template>
