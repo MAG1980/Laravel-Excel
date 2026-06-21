@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
+import router from '@spa/router'; // Vue Router
 import App from './App.vue';
-import router from './router';      // Vue Router
 import '../../css/spa.css'; // отдельные стили для SPA (опционально)
 
 // Настройка Axios для работы с Sanctum (httpOnly cookies)
