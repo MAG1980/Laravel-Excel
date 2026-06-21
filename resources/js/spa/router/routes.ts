@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
+import { authRoutes } from '@spa/router/authRoutes';
 
 // Определите массив ваших маршрутов
 export const routes: RouteRecordRaw[] = [
@@ -6,20 +7,30 @@ export const routes: RouteRecordRaw[] = [
         path: '/',
         name: 'home',
         // Используйте ленивую загрузку для компонентов
-        component: () => import('../pages/Home.vue'),
+        component: () => import('@spa/pages/Home.vue'),
         meta: { title: 'Главная' },
     },
     {
         path: '/about',
         name: 'about',
-        component: () => import('../pages/About.vue'),
+        component: () => import('@spa/pages/About.vue'),
         meta: { title: 'О компании' },
     },
     {
         path: '/get',
         name: 'get.index',
-        component: () => import('../pages/Get/Index.vue'),
+        component: () => import('@spa/pages/Get/Index.vue'),
         meta: { title: 'Get' },
+    },
+    {
+        path: '/auth',
+        children: [...authRoutes],
+    },
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: () => import('@spa/pages/dashboard/index.vue'),
+        meta: { title: 'Dashboard', requiresAuth: true },
     },
     {
         path: '/user',
@@ -27,13 +38,13 @@ export const routes: RouteRecordRaw[] = [
             {
                 path: 'login',
                 name: 'user.login',
-                component: () => import('../pages/user/Login.vue'),
+                component: () => import('@spa/pages/user/Login.vue'),
                 meta: { title: 'Login Page' },
             },
             {
                 path: 'registration',
                 name: 'user.registration',
-                component: () => import('../pages/user/Registration.vue'),
+                component: () => import('@spa/pages/user/Registration.vue'),
                 meta: { title: 'Registration Page' },
             },
         ],
@@ -42,7 +53,7 @@ export const routes: RouteRecordRaw[] = [
     {
         path: '/:pathMatch(.*)*',
         name: 'not-found',
-        component: () => import('../pages/NotFound.vue'),
+        component: () => import('@spa/pages/NotFound.vue'),
         meta: { title: 'Страница не найдена' },
     },
 ];
