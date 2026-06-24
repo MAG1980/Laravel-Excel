@@ -31,7 +31,7 @@ export const useAuthStore = defineStore('auth', {
                 this.isLoggedIn = false;
             }
 
-            console.log({isLoggedIn: this.isLoggedIn, user: this.user});
+            console.log({ isLoggedIn: this.isLoggedIn, user: this.user });
         },
 
         /**
@@ -60,10 +60,21 @@ export const useAuthStore = defineStore('auth', {
         /**
          * Выход из системы
          */
-        async logout(): Promise<void> {
-            await api.post('/logout');
-            this.user = null;
-            this.isLoggedIn = false;
+        async logout(): Promise<ActionResult> {
+            try {
+                await api.post('/logout');
+                this.user = null;
+                this.isLoggedIn = false;
+                return { success: true };
+            } catch (error: unknown) {
+                const err = error as {
+                    response?: { data?: { errors?: ValidationErrors } };
+                };
+                return {
+                    success: false,
+                    errors: err.response?.data?.errors || {},
+                };
+            }
         },
 
         /**
