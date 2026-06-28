@@ -19,7 +19,7 @@ class ProjectController extends Controller
     public function importStore(ImportStoreRequest $request)
     {
         $data = $request->validated();
-        $file = File::createFile($data['file']);
+        $file = File::createFromUpload($data['file']);
 
         $task = Task::create([
             'user_id' => auth()->id(),
