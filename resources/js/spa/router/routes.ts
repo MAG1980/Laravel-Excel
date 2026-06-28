@@ -27,14 +27,14 @@ export const routes: RouteRecordRaw[] = [
         children: [...authRoutes],
     },
     {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: () => import('@spa/pages/dashboard/index.vue'),
-        meta: { title: 'Dashboard', requiresAuth: true },
-    },
-    {
         path: '/user',
         children: [
+            {
+                path: '/dashboard',
+                name: 'user.dashboard',
+                component: () => import('@spa/pages/dashboard/Index.vue'),
+                meta: { title: 'Dashboard', requiresAuth: true },
+            },
             {
                 path: 'login',
                 name: 'user.login',

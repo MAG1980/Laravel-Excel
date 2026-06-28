@@ -66,7 +66,7 @@ const submit = async () => {
     errors.value = {};
     const result = await authStore.login(form);
     if (result.success) {
-        router.push({ name: 'dashboard' });
+        router.push({ name: 'user.dashboard' });
     } else {
         errors.value = result.errors || { email: 'Неверные учётные данные' };
     }

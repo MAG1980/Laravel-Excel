@@ -10,6 +10,9 @@
             <router-link v-if="!isLoggedIn" :to="{ name: 'auth.registration' }"
                 >Registration
             </router-link>
+            <router-link v-if="isLoggedIn" :to="{ name: 'user.dashboard' }"
+                >Dashboard
+            </router-link>
             <button v-if="isLoggedIn" @click="exit">Logout</button>
         </nav>
     </div>
@@ -31,7 +34,7 @@ const { isLoggedIn } = storeToRefs(authStore);
 const logoutError = ref<string | null>(null);
 const exit = async () => {
     logoutError.value = null;
-    const result:ActionResult = await authStore.logout();
+    const result: ActionResult = await authStore.logout();
     if (result.success) {
         // Успешный выход – перенаправляем на логин
         router.push({ name: 'auth.login' });
@@ -41,7 +44,8 @@ const exit = async () => {
         const firstErrorMessage = result.errors
             ? Object.values(result.errors)[0]?.[0] // берём первую ошибку из первого поля
             : null;
-        logoutError.value = firstErrorMessage || 'Не удалось выйти. Попробуйте позже.';
+        logoutError.value =
+            firstErrorMessage || 'Не удалось выйти. Попробуйте позже.';
     }
 };
 </script>
