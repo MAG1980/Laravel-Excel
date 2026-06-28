@@ -1,20 +1,25 @@
 <template>
-    <form class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <form
+        @submit.prevent="postStore"
+        class="mx-auto mt-10 max-w-md rounded-lg bg-white p-6 shadow-md"
+    >
+        <!-- Заголовок -->
         <div class="mb-4">
-            <label for="title" class="block text-gray-700 text-sm font-bold mb-2">
+            <label for="title" class="mb-2 block text-sm font-bold text-gray-700">
                 Заголовок
             </label>
             <input
                 id="title"
-                type="text"
                 v-model="title"
+                type="text"
                 placeholder="Введите заголовок"
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                class="w-full rounded-md border border-gray-300 px-4 py-2 transition duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
         </div>
 
+        <!-- Содержание -->
         <div class="mb-4">
-            <label for="content" class="block text-gray-700 text-sm font-bold mb-2">
+            <label for="content" class="mb-2 block text-sm font-bold text-gray-700">
                 Содержание
             </label>
             <textarea
@@ -22,48 +27,113 @@
                 v-model="content"
                 placeholder="Введите текст поста"
                 rows="5"
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 resize-y"
+                class="w-full resize-y rounded-md border border-gray-300 px-4 py-2 transition duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
             ></textarea>
         </div>
 
+        <!-- Блок выбора изображения -->
+        <div class="mb-4 flex items-center gap-4">
+            <input
+                id="postImage"
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                class="hidden"
+                @change="onFileSelected"
+            />
+            <button
+                type="button"
+                @click="triggerFileInput"
+                class="rounded-md bg-gray-200 px-4 py-2 font-semibold text-gray-700 transition hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none active:scale-[0.98]"
+            >
+                Добавить изображение
+            </button>
+            <span v-if="imageName" class="text-sm text-gray-600">
+        {{ imageName }}
+      </span>
+            <span v-else class="text-sm text-gray-400">Файл не выбран</span>
+        </div>
+
+        <!-- Кнопка отправки -->
         <button
             type="submit"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-[0.98]"
+            :disabled="isLoading"
+            class="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
         >
-            Создать пост
+            {{ isLoading ? 'Создание...' : 'Создать пост' }}
         </button>
+
+        <!-- Сообщение об ошибке -->
+        <p v-if="errorMessage" class="mt-3 text-center text-sm text-red-600">
+            {{ errorMessage }}
+        </p>
     </form>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import api from '@spa/axios';
 
 const title = ref('');
 const content = ref('');
-</script>
+const imageFile = ref<File | null>(null);
+const imageName = ref('');
+const isLoading = ref(false);
+const errorMessage = ref('');
 
-<style scoped>
-/* Дополнительный кастомный стиль для улучшения внешнего вида */
-form {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
+const fileInput = ref<HTMLInputElement | null>(null);
 
-/* Лёгкая тень при фокусе (дублирует Tailwind, но даёт более плавный эффект) */
-input:focus,
-textarea:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-}
+// Открыть диалог выбора файла
+const triggerFileInput = () => {
+    fileInput.value?.click();
+};
 
-/* Анимация нажатия кнопки */
-button:active {
-    transform: scale(0.97);
-}
-
-/* Добавляем отступы для мобильных устройств */
-@media (max-width: 640px) {
-    form {
-        margin-left: 1rem;
-        margin-right: 1rem;
+// Обработчик выбора файла
+const onFileSelected = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file) {
+        imageFile.value = file;
+        imageName.value = file.name;
+    } else {
+        imageFile.value = null;
+        imageName.value = '';
     }
-}
-</style>
+    // Сбрасываем поле, чтобы можно было выбрать тот же файл повторно
+    target.value = '';
+};
+
+// Отправка формы
+const postStore = async () => {
+    errorMessage.value = '';
+    isLoading.value = true;
+
+    try {
+        const formData = new FormData();
+        formData.append('title', title.value);
+        formData.append('content', content.value);
+        if (imageFile.value) {
+            formData.append('image', imageFile.value);
+        }
+
+        const response = await api.post('/api/posts', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        console.log('Пост создан:', response.data);
+
+        // Очистка формы после успешной отправки
+        title.value = '';
+        content.value = '';
+        imageFile.value = null;
+        imageName.value = '';
+    } catch (error: any) {
+        console.error(error);
+        errorMessage.value = error.response?.data?.message || 'Ошибка при создании поста';
+    } finally {
+        isLoading.value = false;
+    }
+};
+</script>

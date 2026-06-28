@@ -44,14 +44,16 @@ trait UploadsFile
      *
      * @throws \Exception
      */
-    public static function createFromUpload(UploadedFile $file): static
+    public static function createFromUpload(UploadedFile $file, array $attributes = []): static
     {
         $path = static::saveFileToDisk($file);
 
-        return static::create([
+        $data = array_merge([
             'path' => $path,
             'title' => $file->getClientOriginalName(),
             'mime_type' => $file->getClientMimeType(),
-        ]);
+        ], $attributes);
+
+        return static::create($data);
     }
 }
