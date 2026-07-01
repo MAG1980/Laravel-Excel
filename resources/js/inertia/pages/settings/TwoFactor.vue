@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import Heading from '@inertia/components/Heading.vue';
 import TwoFactorRecoveryCodes from '@inertia/components/TwoFactorRecoveryCodes.vue';
 import TwoFactorSetupModal from '@inertia/components/TwoFactorSetupModal.vue';
-import { useTwoFactorAuth } from '@inertia/composables/useTwoFactorAuth';
+import { useTwoFactorAuth } from '@/composables/useTwoFactorAuth';
 import AppLayout from '@inertia/layouts/AppLayout.vue';
 import SettingsLayout from '@inertia/layouts/settings/Layout.vue';
 import type { BreadcrumbItem } from '@inertia/types';

@@ -6,8 +6,8 @@ import { edit as editPassword } from '@inertia/routes/user-password';
 import { Link } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import Heading from '@inertia/components/Heading.vue';
-import { useCurrentUrl } from '@inertia/composables/useCurrentUrl';
 import { toUrl } from '@inertia/lib/utils';
 import { type NavItem } from '@inertia/types';
 

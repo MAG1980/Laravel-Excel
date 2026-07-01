@@ -18,10 +18,10 @@ import {
     InputOTPSlot,
 } from '@/components/ui/input-otp';
 import { Spinner } from '@/components/ui/spinner';
-import { useAppearance } from '@/composables/useAppearance';
-import { useTwoFactorAuth } from '@/composables/useTwoFactorAuth';
 import AlertError from '@inertia/components/AlertError.vue';
 import InputError from '@inertia/components/InputError.vue';
+import { useAppearance } from '@/composables/useAppearance';
+import { useTwoFactorAuth } from '@/composables/useTwoFactorAuth';
 import type { TwoFactorConfigContent } from '@inertia/types';
 
 type Props = {
