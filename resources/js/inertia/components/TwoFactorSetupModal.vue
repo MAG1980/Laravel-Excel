@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import AlertError from '@inertia/components/AlertError.vue';
-import InputError from '@inertia/components/InputError.vue';
-import { Button } from '@inertia/components/ui/button';
+import { confirm } from '@inertia/routes/two-factor';
+import { Form } from '@inertiajs/vue3';
+import { useClipboard } from '@vueuse/core';
+import { Check, Copy, ScanLine } from 'lucide-vue-next';
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from '@inertia/components/ui/dialog';
+} from '@/components/ui/dialog';
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
-} from '@inertia/components/ui/input-otp';
-import { Spinner } from '@inertia/components/ui/spinner';
+} from '@/components/ui/input-otp';
+import { Spinner } from '@/components/ui/spinner';
+import AlertError from '@inertia/components/AlertError.vue';
+import InputError from '@inertia/components/InputError.vue';
 import { useAppearance } from '@inertia/composables/useAppearance';
 import { useTwoFactorAuth } from '@inertia/composables/useTwoFactorAuth';
-import { confirm } from '@inertia/routes/two-factor';
 import type { TwoFactorConfigContent } from '@inertia/types';
-import { Form } from '@inertiajs/vue3';
-import { useClipboard } from '@vueuse/core';
-import { Check, Copy, ScanLine } from 'lucide-vue-next';
-import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
 
 type Props = {
     requiresConfirmation: boolean;

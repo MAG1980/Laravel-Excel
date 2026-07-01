@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-} from '@inertia/components/ui/avatar';
+} from '@/components/ui/avatar';
 import { useInitials } from '@inertia/composables/useInitials';
 import type { User } from '@inertia/types';
-import { computed } from 'vue';
 
 type Props = {
     user: User;

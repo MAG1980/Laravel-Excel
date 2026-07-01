@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import InputError from '@inertia/components/InputError.vue';
-import { Button } from '@inertia/components/ui/button';
-import { Input } from '@inertia/components/ui/input';
+import { store } from '@inertia/routes/two-factor/login';
+import { Form, Head } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
-} from '@inertia/components/ui/input-otp';
+} from '@/components/ui/input-otp';
+import InputError from '@inertia/components/InputError.vue';
 import AuthLayout from '@inertia/layouts/AuthLayout.vue';
-import { store } from '@inertia/routes/two-factor/login';
 import type { TwoFactorConfigContent } from '@inertia/types';
-import { Form, Head } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
 
 const authConfigContent = computed<TwoFactorConfigContent>(() => {
     if (showRecoveryInput.value) {

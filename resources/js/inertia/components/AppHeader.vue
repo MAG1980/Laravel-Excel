@@ -1,46 +1,46 @@
 <script setup lang="ts">
-import AppLogo from '@inertia/components/AppLogo.vue';
-import AppLogoIcon from '@inertia/components/AppLogoIcon.vue';
-import Breadcrumbs from '@inertia/components/Breadcrumbs.vue';
+import { dashboard } from '@inertia/routes';
+import { Link, usePage } from '@inertiajs/vue3';
+import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
+import { computed } from 'vue';
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-} from '@inertia/components/ui/avatar';
-import { Button } from '@inertia/components/ui/button';
+} from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuTrigger,
-} from '@inertia/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import {
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuList,
     navigationMenuTriggerStyle,
-} from '@inertia/components/ui/navigation-menu';
+} from '@/components/ui/navigation-menu';
 import {
     Sheet,
     SheetContent,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from '@inertia/components/ui/sheet';
+} from '@/components/ui/sheet';
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from '@inertia/components/ui/tooltip';
+} from '@/components/ui/tooltip';
+import AppLogo from '@inertia/components/AppLogo.vue';
+import AppLogoIcon from '@inertia/components/AppLogoIcon.vue';
+import Breadcrumbs from '@inertia/components/Breadcrumbs.vue';
 import UserMenuContent from '@inertia/components/UserMenuContent.vue';
 import { useCurrentUrl } from '@inertia/composables/useCurrentUrl';
 import { getInitials } from '@inertia/composables/useInitials';
 import { toUrl } from '@inertia/lib/utils';
-import { dashboard } from '@inertia/routes';
 import type { BreadcrumbItem, NavItem } from '@inertia/types';
-import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
-import { computed } from 'vue';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];

@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import Breadcrumbs from '@inertia/components/Breadcrumbs.vue';
-import { SidebarTrigger } from '@inertia/components/ui/sidebar';
 import type { BreadcrumbItem } from '@inertia/types';
 
 withDefaults(

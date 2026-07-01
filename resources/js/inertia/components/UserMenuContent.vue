@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { Link, router } from '@inertiajs/vue3';
 import { LogOut, Settings } from 'lucide-vue-next';
-import { logout } from '@/routes';
-import { edit } from '@/routes/profile';
 import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-} from '@inertia/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
+import { logout } from '@/routes';
+import { edit } from '@/routes/profile';
 import UserInfo from '@inertia/components/UserInfo.vue';
 import type { User } from '@inertia/types';
 

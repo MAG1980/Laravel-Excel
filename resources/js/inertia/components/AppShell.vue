@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { SidebarProvider } from '@inertia/components/ui/sidebar';
-import type { AppShellVariant } from '@inertia/types';
 import { usePage } from '@inertiajs/vue3';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import type { AppShellVariant } from '@inertia/types';
 
 type Props = {
     variant?: AppShellVariant;

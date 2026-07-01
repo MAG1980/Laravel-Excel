@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import InputError from '@inertia/components/InputError.vue';
-import TextLink from '@inertia/components/TextLink.vue';
-import { Button } from '@inertia/components/ui/button';
-import { Input } from '@inertia/components/ui/input';
-import { Label } from '@inertia/components/ui/label';
-import { Spinner } from '@inertia/components/ui/spinner';
-import AuthBase from '@inertia/layouts/AuthLayout.vue';
 import { login } from '@inertia/routes';
 import { store } from '@inertia/routes/register';
 import { Form, Head } from '@inertiajs/vue3';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
+import InputError from '@inertia/components/InputError.vue';
+import TextLink from '@inertia/components/TextLink.vue';
+import AuthBase from '@inertia/layouts/AuthLayout.vue';
 </script>
 
 <template>

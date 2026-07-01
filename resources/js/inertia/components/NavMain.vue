@@ -6,7 +6,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from '@inertia/components/ui/sidebar';
+} from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@inertia/composables/useCurrentUrl';
 import { type NavItem } from '@inertia/types';
 

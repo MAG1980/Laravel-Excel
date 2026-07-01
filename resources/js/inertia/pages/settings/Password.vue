@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { edit } from '@inertia/routes/user-password';
+import { Form, Head } from '@inertiajs/vue3';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import PasswordController from '@inertia/actions/App/Http/Controllers/Settings/PasswordController';
 import Heading from '@inertia/components/Heading.vue';
 import InputError from '@inertia/components/InputError.vue';
-import { Button } from '@inertia/components/ui/button';
-import { Input } from '@inertia/components/ui/input';
-import { Label } from '@inertia/components/ui/label';
 import AppLayout from '@inertia/layouts/AppLayout.vue';
 import SettingsLayout from '@inertia/layouts/settings/Layout.vue';
-import { edit } from '@inertia/routes/user-password';
 import { type BreadcrumbItem } from '@inertia/types';
-import { Form, Head } from '@inertiajs/vue3';
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {

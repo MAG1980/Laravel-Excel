@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from '@inertia/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@inertia/lib/utils';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next';
 import type { HTMLAttributes } from 'vue';

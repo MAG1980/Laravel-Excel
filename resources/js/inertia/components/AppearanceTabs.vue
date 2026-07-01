@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useAppearance } from '@inertia/composables/useAppearance';
 import { Monitor, Moon, Sun } from 'lucide-vue-next';
+import { useAppearance } from '@inertia/composables/useAppearance';
 
 const { appearance, updateAppearance } = useAppearance();
 

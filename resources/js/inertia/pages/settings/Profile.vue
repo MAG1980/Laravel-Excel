@@ -1,17 +1,17 @@
 <script setup lang="ts">
+import { edit } from '@inertia/routes/profile';
+import { send } from '@inertia/routes/verification';
+import { Form, Head, Link, usePage } from '@inertiajs/vue3';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import ProfileController from '@inertia/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@inertia/components/DeleteUser.vue';
 import Heading from '@inertia/components/Heading.vue';
 import InputError from '@inertia/components/InputError.vue';
-import { Button } from '@inertia/components/ui/button';
-import { Input } from '@inertia/components/ui/input';
-import { Label } from '@inertia/components/ui/label';
 import AppLayout from '@inertia/layouts/AppLayout.vue';
 import SettingsLayout from '@inertia/layouts/settings/Layout.vue';
-import { edit } from '@inertia/routes/profile';
-import { send } from '@inertia/routes/verification';
 import { type BreadcrumbItem } from '@inertia/types';
-import { Form, Head, Link, usePage } from '@inertiajs/vue3';
 
 type Props = {
     mustVerifyEmail: boolean;

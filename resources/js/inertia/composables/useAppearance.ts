@@ -1,6 +1,6 @@
-import type { Appearance, ResolvedAppearance } from '@inertia/types';
 import type { ComputedRef, Ref } from 'vue';
 import { computed, onMounted, ref } from 'vue';
+import type { Appearance, ResolvedAppearance } from '@inertia/types';
 
 export type { Appearance, ResolvedAppearance };
 

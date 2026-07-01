@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import Heading from '@inertia/components/Heading.vue';
-import { Button } from '@inertia/components/ui/button';
-import { Separator } from '@inertia/components/ui/separator';
-import { useCurrentUrl } from '@inertia/composables/useCurrentUrl';
-import { toUrl } from '@inertia/lib/utils';
 import { edit as editAppearance } from '@inertia/routes/appearance';
 import { edit as editProfile } from '@inertia/routes/profile';
 import { show } from '@inertia/routes/two-factor';
 import { edit as editPassword } from '@inertia/routes/user-password';
-import { type NavItem } from '@inertia/types';
 import { Link } from '@inertiajs/vue3';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import Heading from '@inertia/components/Heading.vue';
+import { useCurrentUrl } from '@inertia/composables/useCurrentUrl';
+import { toUrl } from '@inertia/lib/utils';
+import { type NavItem } from '@inertia/types';
 
 const sidebarNavItems: NavItem[] = [
     {

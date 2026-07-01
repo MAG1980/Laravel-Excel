@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import AppLogoIcon from '@inertia/components/AppLogoIcon.vue';
+import { home } from '@inertia/routes';
+import { Link } from '@inertiajs/vue3';
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from '@inertia/components/ui/card';
-import { home } from '@inertia/routes';
-import { Link } from '@inertiajs/vue3';
+} from '@/components/ui/card';
+import AppLogoIcon from '@inertia/components/AppLogoIcon.vue';
 
 defineProps<{
     title?: string;

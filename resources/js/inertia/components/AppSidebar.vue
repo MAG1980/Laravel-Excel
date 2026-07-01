@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import NavFooter from '@inertia/components/NavFooter.vue';
-import NavMain from '@inertia/components/NavMain.vue';
-import NavUser from '@inertia/components/NavUser.vue';
 import { Link } from '@inertiajs/vue3';
 import {
     BookOpen,
@@ -19,12 +16,15 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from '@inertia/components/ui/sidebar';
-import { type NavItem } from '@inertia/types';
+} from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { index as projectsIndex } from '@/routes/projects';
 import { show as projectsImportShow } from '@/routes/projects/import';
 import { index as tasksIndex } from '@/routes/tasks';
+import NavFooter from '@inertia/components/NavFooter.vue';
+import NavMain from '@inertia/components/NavMain.vue';
+import NavUser from '@inertia/components/NavUser.vue';
+import { type NavItem } from '@inertia/types';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [

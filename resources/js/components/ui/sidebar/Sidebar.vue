@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Sheet, SheetContent } from '@inertia/components/ui/sheet';
-import SheetDescription from '@inertia/components/ui/sheet/SheetDescription.vue';
-import SheetHeader from '@inertia/components/ui/sheet/SheetHeader.vue';
-import SheetTitle from '@inertia/components/ui/sheet/SheetTitle.vue';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+import SheetDescription from '@/components/ui/sheet/SheetDescription.vue';
+import SheetHeader from '@/components/ui/sheet/SheetHeader.vue';
+import SheetTitle from '@/components/ui/sheet/SheetTitle.vue';
 import { cn } from '@inertia/lib/utils';
 import { SIDEBAR_WIDTH_MOBILE, useSidebar } from './utils';
 import type { SidebarProps } from '.';

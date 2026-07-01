@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { Button } from '@/components/ui/button';
 import { index as indexProjects } from '@/routes/projects';
 import {
     show as importShow,
     store as importStore,
 } from '@/routes/projects/import';
-import { Button } from '@inertia/components/ui/button';
 import AppLayout from '@inertia/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@inertia/types';
 

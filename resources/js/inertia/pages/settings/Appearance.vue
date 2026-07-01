@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { edit } from '@inertia/routes/appearance';
+import { Head } from '@inertiajs/vue3';
 import AppearanceTabs from '@inertia/components/AppearanceTabs.vue';
 import Heading from '@inertia/components/Heading.vue';
 import AppLayout from '@inertia/layouts/AppLayout.vue';
 import SettingsLayout from '@inertia/layouts/settings/Layout.vue';
-import { edit } from '@inertia/routes/appearance';
 import { type BreadcrumbItem } from '@inertia/types';
-import { Head } from '@inertiajs/vue3';
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {

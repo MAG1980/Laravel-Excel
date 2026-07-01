@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import AlertError from '@inertia/components/AlertError.vue';
-import { Button } from '@inertia/components/ui/button';
+import { regenerateRecoveryCodes } from '@inertia/routes/two-factor';
+import { Form } from '@inertiajs/vue3';
+import { Eye, EyeOff, LockKeyhole, RefreshCw } from 'lucide-vue-next';
+import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from '@inertia/components/ui/card';
+} from '@/components/ui/card';
+import AlertError from '@inertia/components/AlertError.vue';
 import { useTwoFactorAuth } from '@inertia/composables/useTwoFactorAuth';
-import { regenerateRecoveryCodes } from '@inertia/routes/two-factor';
-import { Form } from '@inertiajs/vue3';
-import { Eye, EyeOff, LockKeyhole, RefreshCw } from 'lucide-vue-next';
-import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
 
 const { recoveryCodesList, fetchRecoveryCodes, errors } = useTwoFactorAuth();
 const isRecoveryCodesVisible = ref<boolean>(false);

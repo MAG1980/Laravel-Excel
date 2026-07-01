@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import TextLink from '@inertia/components/TextLink.vue';
-import { Button } from '@inertia/components/ui/button';
-import { Spinner } from '@inertia/components/ui/spinner';
-import AuthLayout from '@inertia/layouts/AuthLayout.vue';
 import { logout } from '@inertia/routes';
 import { send } from '@inertia/routes/verification';
 import { Form, Head } from '@inertiajs/vue3';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
+import TextLink from '@inertia/components/TextLink.vue';
+import AuthLayout from '@inertia/layouts/AuthLayout.vue';
 
 defineProps<{
     status?: string;

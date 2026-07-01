@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import InputError from '@inertia/components/InputError.vue';
-import { Button } from '@inertia/components/ui/button';
-import { Input } from '@inertia/components/ui/input';
-import { Label } from '@inertia/components/ui/label';
-import { Spinner } from '@inertia/components/ui/spinner';
-import AuthLayout from '@inertia/layouts/AuthLayout.vue';
 import { update } from '@inertia/routes/password';
 import { Form, Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
+import InputError from '@inertia/components/InputError.vue';
+import AuthLayout from '@inertia/layouts/AuthLayout.vue';
 
 const props = defineProps<{
     token: string;

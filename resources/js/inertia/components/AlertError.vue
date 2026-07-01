@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { AlertCircle } from 'lucide-vue-next';
+import { computed } from 'vue';
 import {
     Alert,
     AlertDescription,
     AlertTitle,
-} from '@inertia/components/ui/alert';
-import { AlertCircle } from 'lucide-vue-next';
-import { computed } from 'vue';
+} from '@/components/ui/alert';
 
 type Props = {
     errors: string[];

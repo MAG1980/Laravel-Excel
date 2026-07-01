@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import ProfileController from '@inertia/actions/App/Http/Controllers/Settings/ProfileController';
-import Heading from '@inertia/components/Heading.vue';
-import InputError from '@inertia/components/InputError.vue';
-import { Button } from '@inertia/components/ui/button';
+import { Form } from '@inertiajs/vue3';
+import { useTemplateRef } from 'vue';
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogClose,
@@ -12,11 +11,12 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@inertia/components/ui/dialog';
-import { Input } from '@inertia/components/ui/input';
-import { Label } from '@inertia/components/ui/label';
-import { Form } from '@inertiajs/vue3';
-import { useTemplateRef } from 'vue';
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import ProfileController from '@inertia/actions/App/Http/Controllers/Settings/ProfileController';
+import Heading from '@inertia/components/Heading.vue';
+import InputError from '@inertia/components/InputError.vue';
 
 const passwordInput = useTemplateRef('passwordInput');
 </script>

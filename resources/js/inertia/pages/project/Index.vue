@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import Pagination from '@inertia/components/ui/pagination/Pagination.vue';
+import Pagination from '@/components/ui/pagination/Pagination.vue';
+import { dashboard } from '@/routes';
+import { index as projectsIndex } from '@/routes/projects';
 import AppLayout from '@inertia/layouts/AppLayout.vue';
 import type { BreadcrumbItem, Meta } from '@inertia/types';
 import type { Project } from '@inertia/types/project';
-import { dashboard } from '@/routes';
-import { index as projectsIndex } from '@/routes/projects';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

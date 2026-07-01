@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import Pagination from '@/components/ui/pagination/Pagination.vue';
 import { index as tasksIndex } from '@/routes/tasks';
-import Pagination from '@inertia/components/ui/pagination/Pagination.vue';
 import AppLayout from '@inertia/layouts/AppLayout.vue';
 import type { BreadcrumbItem, Meta } from '@inertia/types';
 

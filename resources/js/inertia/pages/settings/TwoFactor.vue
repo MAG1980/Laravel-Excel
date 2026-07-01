@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import Heading from '@inertia/components/Heading.vue';
-import TwoFactorRecoveryCodes from '@inertia/components/TwoFactorRecoveryCodes.vue';
-import TwoFactorSetupModal from '@inertia/components/TwoFactorSetupModal.vue';
-import { Badge } from '@inertia/components/ui/badge';
-import { Button } from '@inertia/components/ui/button';
-import { useTwoFactorAuth } from '@inertia/composables/useTwoFactorAuth';
-import AppLayout from '@inertia/layouts/AppLayout.vue';
-import SettingsLayout from '@inertia/layouts/settings/Layout.vue';
 import { disable, enable, show } from '@inertia/routes/two-factor';
-import type { BreadcrumbItem } from '@inertia/types';
 import { Form, Head } from '@inertiajs/vue3';
 import { ShieldBan, ShieldCheck } from 'lucide-vue-next';
 import { onUnmounted, ref } from 'vue';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import Heading from '@inertia/components/Heading.vue';
+import TwoFactorRecoveryCodes from '@inertia/components/TwoFactorRecoveryCodes.vue';
+import TwoFactorSetupModal from '@inertia/components/TwoFactorSetupModal.vue';
+import { useTwoFactorAuth } from '@inertia/composables/useTwoFactorAuth';
+import AppLayout from '@inertia/layouts/AppLayout.vue';
+import SettingsLayout from '@inertia/layouts/settings/Layout.vue';
+import type { BreadcrumbItem } from '@inertia/types';
 
 type Props = {
     requiresConfirmation?: boolean;

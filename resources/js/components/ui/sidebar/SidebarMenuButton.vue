@@ -3,7 +3,7 @@ import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
-} from '@inertia/components/ui/tooltip';
+} from '@/components/ui/tooltip';
 import { reactiveOmit } from '@vueuse/core';
 import type { Component } from 'vue';
 import type { SidebarMenuButtonProps } from './SidebarMenuButtonChild.vue';

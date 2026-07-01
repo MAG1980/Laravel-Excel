@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
-import AppLayout from '@inertia/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
+import AppLayout from '@inertia/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@inertia/types';
 import PlaceholderPattern from '../components/PlaceholderPattern.vue';
 

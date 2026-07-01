@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Input } from '@inertia/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 import { cn } from '@inertia/lib/utils';
 import type { HTMLAttributes } from 'vue';
 
@@ -9,11 +9,11 @@ const props = defineProps<{
 </script>
 
 <template>
-    <Input
-        data-slot="sidebar-input"
-        data-sidebar="input"
-        :class="cn('h-8 w-full bg-background shadow-none', props.class)"
+    <Separator
+        data-slot="sidebar-separator"
+        data-sidebar="separator"
+        :class="cn('mx-2 w-auto bg-sidebar-border', props.class)"
     >
         <slot />
-    </Input>
+    </Separator>
 </template>
