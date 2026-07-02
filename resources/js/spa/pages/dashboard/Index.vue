@@ -1,15 +1,22 @@
-<template>
-    <div id="app">
-        <h1>Dashboard</h1>
-
-        <CreatePostTable />
-
-        <UploadImageForm />
-    </div>
-</template>
-
+<!-- pages/dashboard/Index.vue -->
 <script setup lang="ts">
-// здесь может быть логика приложения
-import CreatePostTable from '@spa/components/CreatePostTable.vue';
-import UploadImageForm from '@spa/components/UploadImageForm.vue';
+import DashboardLayout from '@spa/pages/dashboard/layouts/DashboardLayout.vue';
+import { type BreadcrumbItem } from '@spa/types';
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        name: 'user.dashboard',
+    },
+];
 </script>
+
+<template>
+    <h1>Dashboard</h1>
+
+    <DashboardLayout :breadcrumbs="breadcrumbs">
+        <transition>
+            <!-- Единый слот для вложенных маршрутов -->
+            <router-view class="flex-1"/>
+        </transition>
+    </DashboardLayout>
+</template>
