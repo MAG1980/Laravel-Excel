@@ -36,12 +36,14 @@
                     v-if="previewUrl"
                     class="mb-3 flex flex-col items-center justify-center"
                 >
-                    <img
-                        :src="previewUrl"
-                        alt="Превью"
-                        class="max-h-48 max-w-min rounded-md border border-gray-200 object-contain"
-                    />
-
+                    <div class="relative">
+                        <LoaderCircle v-if="isLoading" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 animate-spin" :size="48" :stroke-width="2.5" aria-label="Loading" />
+                        <img
+                            :src="previewUrl"
+                            alt="Превью"
+                            class="max-h-48 max-w-min rounded-md border border-gray-200 object-contain"
+                        />
+                    </div>
                     <span v-if="imageName" class="mb-3 text-sm text-gray-600">
                         {{ imageName }}
                     </span>
@@ -50,6 +52,7 @@
                     >
 
                     <button
+                        v-if="!isLoading"
                         type="button"
                         @click="removeImage"
                         class="w-full rounded-md bg-red-700 px-4 py-2 font-semibold text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
@@ -111,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { X } from '@lucide/vue';
+import { X, LoaderCircle } from '@lucide/vue';
 import { ref } from 'vue';
 import api from '@spa/axios';
 
@@ -208,7 +211,7 @@ const imageStore = async () => {
         });
 
         uploadedImageUrl.value = response.data.url;
-        console.log({response});
+        console.log({ response });
         console.log(uploadedImageUrl.value);
         console.log('Изображение загружено на сервер:', response.data);
 
