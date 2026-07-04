@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PostImage extends Model
 {
     use UploadsFile;
+
     // Значения свойств trait можно переопределить:
     // protected static string $fileDisk = 's3';        // другой диск
     // protected static string $fileDirectory = 'uploads/images/'; // другая папка
@@ -20,4 +21,9 @@ class PostImage extends Model
 
     // Альтернатива $guarded - явно указать, какие поля могут быть изменены при массовом присвоении
     // protected $fillable = ['title', 'content'];
+
+    public function getUrlAttribute()
+    {
+        return url('storage/' . $this->path);
+    }
 }

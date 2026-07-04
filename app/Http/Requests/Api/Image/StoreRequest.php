@@ -24,7 +24,9 @@ class StoreRequest extends FormRequest
     {
         return [
             'image' => 'required|file|mimes:jpeg,png,jpg,gif,svg',
-            'isActive' => 'boolean',
+            // 'image'   => 'required|image|max:2048', // 2MB
+            'post_id' => 'sometimes|exists:posts,id',
+            'is_active' => 'sometimes|boolean',
         ];
     }
 }
