@@ -2,6 +2,7 @@
     <div id="app">
         <nav class="flex gap-4">
             <router-link :to="{ name: 'home' }">Home</router-link>
+            <a href="http://localhost/inertia/dashboard">Inertia</a>
             <router-link :to="{ name: 'about' }">About</router-link>
             <router-link :to="{ name: 'get.index' }">Get</router-link>
             <router-link v-if="!isLoggedIn" :to="{ name: 'auth.login' }"

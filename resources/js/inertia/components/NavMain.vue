@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { Gem } from 'lucide-vue-next';
 import {
     SidebarGroup,
     SidebarGroupLabel,
@@ -9,7 +10,6 @@ import {
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { type NavItem } from '@inertia/types';
-
 
 defineProps<{
     items: NavItem[];
@@ -22,6 +22,16 @@ const { isCurrentUrl } = useCurrentUrl();
     <SidebarGroup class="px-2 py-0">
         <SidebarGroupLabel>Platform</SidebarGroupLabel>
         <SidebarMenu>
+            <SidebarMenuItem>
+                <SidebarMenuButton>
+                    <a href="http://localhost/spa/user/dashboard">
+                        <div class="flex text-gray-500">
+                        <Gem :size="16"/>
+                        <span class="ml-2">SPA</span>
+                    </div></a>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+
             <SidebarMenuItem v-for="item in items" :key="item.title">
                 <SidebarMenuButton
                     as-child
