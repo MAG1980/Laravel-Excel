@@ -14,7 +14,6 @@ class PostController extends Controller
     {
         $validated = $request->validated();
 
-        // Сохранение загруженного файла в storage
 
         $createdPost = Post::create([
             'user_id' => auth()->id(),
@@ -22,16 +21,23 @@ class PostController extends Controller
             'content' => $validated['content'],
         ]);
 
-        $postImage = PostImage::createFromUpload($validated['image'],
-            [
-                'user_id' => auth()->id(),
-                'post_id' => $createdPost->id,
-            ]);
+        // Сохранение загруженного файла в storage
+        $postImage = $this->saveImage($validated['image'], auth()->id(), $createdPost->id);
 
         // Вручную устанавливаем отношение, чтобы оно было доступно в ресурсе
         // без лишнего запроса к БД.
         $createdPost->setRelation('postImage', $postImage);
 
         return PostResource::make($createdPost);
+    }
+
+    private function saveImage($image, $authorId, $postId)
+    {
+        return PostImage::createFromUpload($image,
+            [
+                'user_id' => $authorId,
+                'post_id' => $postId,
+                'is_active' => true,
+            ]);
     }
 }
