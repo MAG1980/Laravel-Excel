@@ -1,8 +1,9 @@
 <template>
     <form
         @submit.prevent="postStore"
-        class="mx-auto mt-10 max-w-md rounded-lg bg-white p-6 shadow-md"
+        class="relative mx-auto mt-10 max-w-md rounded-lg bg-white p-6 shadow-md"
     >
+        <LoaderCircle v-if="isLoading" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 animate-spin" :size="96" :stroke-width="2.5" aria-label="Loading" />
         <!-- Заголовок -->
         <div class="mb-4">
             <label
@@ -37,18 +38,17 @@
             ></textarea>
         </div>
 
-
-            <!-- Блок выбора изображения -->
-            <div class="mb-4 flex items-center gap-4">
-                <input
-                    id="postImage"
-                    ref="fileInput"
-                    type="file"
-                    accept="image/*"
-                    class="hidden"
-                    @change="onFileSelected"
-                />
-                <OutInTransition>
+        <!-- Блок выбора изображения -->
+        <div class="mb-4 flex items-center gap-4">
+            <input
+                id="postImage"
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                class="hidden"
+                @change="onFileSelected"
+            />
+            <OutInTransition>
                 <div v-if="!imageFile">
                     <button
                         type="button"
@@ -61,8 +61,8 @@
                         >Файл не выбран</span
                     >
                 </div>
-                </OutInTransition>
-            </div>
+            </OutInTransition>
+        </div>
 
         <OutInTransition>
             <!-- Превью изображения -->
@@ -86,24 +86,32 @@
                     Удалить изображение
                 </button>
             </div>
-            </OutInTransition>
+        </OutInTransition>
 
-            <!-- Кнопка отправки -->
-            <button
-                type="submit"
-                :disabled="isLoading"
-                class="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
-            >
-                {{ isLoading ? 'Создание...' : 'Создать пост' }}
-            </button>
+        <!-- Кнопка отправки -->
+        <button
+            type="submit"
+            :disabled="isLoading"
+            class="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
+        >
+            <span class="flex justify-center items-center gap-2">
+                <span>{{ isLoading ? 'Создание...' : 'Создать пост' }}</span>
+                <span>
+                    <LoaderCircle
+                        v-if="isLoading"
+                        class="animate-spin text-blue-600"
+                        :size="16"
+                        :stroke-width="2.5"
+                        aria-label="Loading"
+                    />
+                </span>
+            </span>
+        </button>
 
-            <!-- Сообщение об ошибке -->
-            <p
-                v-if="errorMessage"
-                class="mt-3 text-center text-sm text-red-600"
-            >
-                {{ errorMessage }}
-            </p>
+        <!-- Сообщение об ошибке -->
+        <p v-if="errorMessage" class="mt-3 text-center text-sm text-red-600">
+            {{ errorMessage }}
+        </p>
     </form>
 </template>
 
@@ -111,6 +119,7 @@
 import { ref } from 'vue';
 import api from '@spa/axios';
 import OutInTransition from '@spa/components/OutInTransition.vue';
+import { LoaderCircle } from '@lucide/vue';
 
 const title = ref('');
 const content = ref('');
