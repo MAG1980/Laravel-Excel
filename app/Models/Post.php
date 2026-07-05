@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
@@ -14,4 +14,10 @@ class Post extends Model
 
     // Альтернатива $guarded - явно указать, какие поля могут быть изменены при массовом присвоении
     // protected $fillable = ['title', 'content'];
+
+    public function image(): HasOne
+    {
+        return $this->hasOne(PostImage::class, 'post_id', 'id')
+            ->whereNotNull('post_id');
+    }
 }
