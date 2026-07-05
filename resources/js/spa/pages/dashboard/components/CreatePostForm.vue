@@ -37,64 +37,80 @@
             ></textarea>
         </div>
 
-        <!-- Блок выбора изображения -->
-        <div class="mb-4 flex items-center gap-4">
-            <input
-                id="postImage"
-                ref="fileInput"
-                type="file"
-                accept="image/*"
-                class="hidden"
-                @change="onFileSelected"
-            />
-            <button
-                type="button"
-                @click="triggerFileInput"
-                class="rounded-md bg-gray-200 px-4 py-2 font-semibold text-gray-700 transition hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none active:scale-[0.98]"
+
+            <!-- Блок выбора изображения -->
+            <div class="mb-4 flex items-center gap-4">
+                <input
+                    id="postImage"
+                    ref="fileInput"
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    @change="onFileSelected"
+                />
+                <OutInTransition>
+                <div v-if="!imageFile">
+                    <button
+                        type="button"
+                        @click="triggerFileInput"
+                        class="rounded-md bg-gray-200 px-4 py-2 font-semibold text-gray-700 transition hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none active:scale-[0.98]"
+                    >
+                        Добавить изображение
+                    </button>
+                    <span class="px-4 text-sm text-gray-400"
+                        >Файл не выбран</span
+                    >
+                </div>
+                </OutInTransition>
+            </div>
+
+        <OutInTransition>
+            <!-- Превью изображения -->
+            <div
+                v-if="previewUrl"
+                class="mt-4 mb-3 flex flex-col items-center justify-center"
             >
-                Добавить изображение
-            </button>
-            <span v-if="imageName" class="text-sm text-gray-600">
-                {{ imageName }}
-            </span>
-            <span v-else class="text-sm text-gray-400">Файл не выбран</span>
-        </div>
+                <img
+                    :src="previewUrl"
+                    alt="Превью"
+                    class="mb-3 max-h-48 max-w-min rounded-md border border-gray-200 object-contain"
+                />
+                <span v-if="imageName" class="text-sm text-gray-600">
+                    {{ imageName }}
+                </span>
+                <button
+                    type="button"
+                    @click="removeImage"
+                    class="w-full rounded-md bg-red-700 px-4 py-2 font-semibold text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
+                >
+                    Удалить изображение
+                </button>
+            </div>
+            </OutInTransition>
 
-        <!-- Превью изображения -->
-        <div v-if="previewUrl" class="flex flex-col justify-center items-center mt-3 mb-3">
-            <img
-                :src="previewUrl"
-                alt="Превью"
-                class="max-h-48 max-w-min rounded-md border border-gray-200 object-contain mb-3"
-            />
+            <!-- Кнопка отправки -->
             <button
-                type="button"
-                @click="removeImage"
-                class="w-full rounded-md bg-red-700 px-4 py-2 font-semibold text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
+                type="submit"
+                :disabled="isLoading"
+                class="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
             >
-                Удалить изображение
+                {{ isLoading ? 'Создание...' : 'Создать пост' }}
             </button>
-        </div>
 
-        <!-- Кнопка отправки -->
-        <button
-            type="submit"
-            :disabled="isLoading"
-            class="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
-        >
-            {{ isLoading ? 'Создание...' : 'Создать пост' }}
-        </button>
-
-        <!-- Сообщение об ошибке -->
-        <p v-if="errorMessage" class="mt-3 text-center text-sm text-red-600">
-            {{ errorMessage }}
-        </p>
+            <!-- Сообщение об ошибке -->
+            <p
+                v-if="errorMessage"
+                class="mt-3 text-center text-sm text-red-600"
+            >
+                {{ errorMessage }}
+            </p>
     </form>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import api from '@spa/axios';
+import OutInTransition from '@spa/components/OutInTransition.vue';
 
 const title = ref('');
 const content = ref('');
