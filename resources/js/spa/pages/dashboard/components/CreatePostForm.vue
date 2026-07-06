@@ -1,11 +1,17 @@
 <template>
     <form
-        @submit.prevent="postStore"
-        class="relative mx-auto mt-10 max-w-md rounded-lg bg-white p-6 shadow-md"
+        @submit.prevent="onSubmit"
+        class="relative mx-auto mt-10 flex max-w-md flex-col gap-4 rounded-lg bg-white p-6 shadow-md"
     >
-        <LoaderCircle v-if="isLoading" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 animate-spin" :size="96" :stroke-width="2.5" aria-label="Loading" />
+        <LoaderCircle
+            v-if="isSubmitting"
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin text-blue-600"
+            :size="96"
+            :stroke-width="2.5"
+            aria-label="Loading"
+        />
         <!-- Заголовок -->
-        <div class="mb-4">
+        <div>
             <label
                 for="title"
                 class="mb-2 block text-sm font-bold text-gray-700"
@@ -15,14 +21,20 @@
             <input
                 id="title"
                 v-model="title"
+                v-bind="titleAttrs"
                 type="text"
                 placeholder="Введите заголовок"
                 class="w-full rounded-md border border-gray-300 px-4 py-2 transition duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
+
+            <!-- Сообщение об ошибке -->
+            <p v-if="errors.title" class="mt-1 text-sm text-red-600">
+                {{ errors.title }}
+            </p>
         </div>
 
         <!-- Содержание -->
-        <div class="mb-4">
+        <div>
             <label
                 for="content"
                 class="mb-2 block text-sm font-bold text-gray-700"
@@ -32,14 +44,20 @@
             <textarea
                 id="content"
                 v-model="content"
+                v-bind="contentAttrs"
                 placeholder="Введите текст поста"
                 rows="5"
                 class="w-full resize-y rounded-md border border-gray-300 px-4 py-2 transition duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
             ></textarea>
+
+            <!-- Сообщение об ошибке -->
+            <p v-if="errors.content" class="mt-1 text-sm text-red-600">
+                {{ errors.content }}
+            </p>
         </div>
 
         <!-- Блок выбора изображения -->
-        <div class="mb-4 flex items-center gap-4">
+        <div class="flex items-center gap-4">
             <input
                 id="postImage"
                 ref="fileInput"
@@ -78,27 +96,36 @@
                 <span v-if="imageName" class="text-sm text-gray-600">
                     {{ imageName }}
                 </span>
-                <button
-                    type="button"
-                    @click="removeImage"
-                    class="w-full rounded-md bg-red-700 px-4 py-2 font-semibold text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
-                >
-                    Удалить изображение
-                </button>
             </div>
         </OutInTransition>
+
+        <!-- Сообщение об ошибке -->
+        <p v-if="errors.image" class="mt-1 text-sm text-red-600">
+            {{ errors.image }}
+        </p>
+
+        <button
+            v-if="previewUrl&&!isSubmitting"
+            type="button"
+            @click="clearSelectedImage"
+            class="w-full rounded-md bg-red-700 px-4 py-2 font-semibold text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
+        >
+            Удалить изображение
+        </button>
 
         <!-- Кнопка отправки -->
         <button
             type="submit"
-            :disabled="isLoading"
+            :disabled="
+                !previewUrl|| isSubmitting || errors.title || errors.content || errors.image
+            "
             class="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
         >
-            <span class="flex justify-center items-center gap-2">
-                <span>{{ isLoading ? 'Создание...' : 'Создать пост' }}</span>
+            <span class="flex items-center justify-center gap-2">
+                <span>{{ isSubmitting ? 'Создание...' : 'Создать пост' }}</span>
                 <span>
                     <LoaderCircle
-                        v-if="isLoading"
+                        v-if="isSubmitting"
                         class="animate-spin text-blue-600"
                         :size="16"
                         :stroke-width="2.5"
@@ -108,7 +135,7 @@
             </span>
         </button>
 
-        <!-- Сообщение об ошибке -->
+        <!-- Сообщение об ошибке от сервера -->
         <p v-if="errorMessage" class="mt-3 text-center text-sm text-red-600">
             {{ errorMessage }}
         </p>
@@ -116,17 +143,37 @@
 </template>
 
 <script setup lang="ts">
+import { LoaderCircle } from '@lucide/vue';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
 import { ref } from 'vue';
 import api from '@spa/axios';
 import OutInTransition from '@spa/components/OutInTransition.vue';
-import { LoaderCircle } from '@lucide/vue';
+import { createPostSchema } from '@spa/pages/dashboard/schemas/create-post.schema';
 
-const title = ref('');
-const content = ref('');
+// Настройка формы
+const {
+    defineField,
+    errors,
+    handleSubmit,
+    resetForm,
+    isSubmitting,
+    setFieldValue,
+    validateField,
+} = useForm({
+    validationSchema: toTypedSchema(createPostSchema),
+});
+
+const [title, titleAttrs] = defineField('title');
+const [content, contentAttrs] = defineField('content');
+// Поле image мы не привязываем через v-bind, т.к. управляем вручную через метод onFileSelected
+// Но defineField нужен для регистрации поля в валидации
+defineField('image');
+
+// Состояние изображения (не входит в схему, управляем вручную)
 const imageFile = ref<File | null>(null);
 const imageName = ref('');
 const previewUrl = ref<string | null>(null);
-const isLoading = ref(false);
 const errorMessage = ref('');
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -154,17 +201,22 @@ const onFileSelected = (event: Event) => {
         // Они уникальны для сеанса и освобождаются при закрытии страницы или явном revoke.
         // Это позволяет отображать изображения без загрузки на сервер.
         previewUrl.value = URL.createObjectURL(file);
+        // 👇 обновляем поле формы и валидируем
+        setFieldValue('image', file);
+        validateField('image'); // сразу покажем ошибку, если файл не подходит
     } else {
         imageFile.value = null;
         imageName.value = '';
         previewUrl.value = null;
+        setFieldValue('image', undefined);
+        validateField('image'); // очищаем ошибку
     }
     // Сбрасываем поле, чтобы можно было выбрать тот же файл повторно
     target.value = '';
 };
 
 // Снять выбор с изображения
-const removeImage = () => {
+const clearSelectedImage = () => {
     if (previewUrl.value) {
         // Очистка оперативной памяти, чтобы избежать утечек
         URL.revokeObjectURL(previewUrl.value);
@@ -172,37 +224,24 @@ const removeImage = () => {
     }
     imageFile.value = null;
     imageName.value = '';
+    setFieldValue('image', undefined);
+    validateField('image'); // сразу очистим ошибку
+
     // Сбрасываем input, чтобы при повторном выборе того же файла сработало событие change
     if (fileInput.value) {
         fileInput.value.value = '';
     }
 };
 
-// Очистка формы (сброс всех полей)
-const resetForm = () => {
-    title.value = '';
-    content.value = '';
-    if (previewUrl.value) {
-        // Очистка оперативной памяти, чтобы избежать утечек
-        URL.revokeObjectURL(previewUrl.value);
-        previewUrl.value = null;
-    }
-    imageFile.value = null;
-    imageName.value = '';
-    if (fileInput.value) {
-        fileInput.value.value = '';
-    }
-};
-
-// Отправка формы
-const postStore = async () => {
+// Отправка формы через useForm.handleSubmit()
+const onSubmit = handleSubmit(async (values) => {
+    // values содержит { title, content } уже валидные
     errorMessage.value = '';
-    isLoading.value = true;
 
     try {
         const formData = new FormData();
-        formData.append('title', title.value);
-        formData.append('content', content.value);
+        formData.append('title', values.title.trim());
+        formData.append('content', values.content.trim());
         if (imageFile.value) {
             formData.append('image', imageFile.value);
         }
@@ -215,14 +254,15 @@ const postStore = async () => {
 
         console.log('Пост создан:', response.data);
 
-        // Очистка формы после успешной отправки
+        // Сброс всей формы (значения + ошибки)
         resetForm();
+        // Также сбрасываем изображение
+        clearSelectedImage();
     } catch (error: any) {
         console.error(error);
         errorMessage.value =
             error.response?.data?.message || 'Ошибка при создании поста';
     } finally {
-        isLoading.value = false;
     }
-};
+});
 </script>

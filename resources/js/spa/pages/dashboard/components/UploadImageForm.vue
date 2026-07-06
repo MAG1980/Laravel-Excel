@@ -27,38 +27,35 @@
         <form
             v-else
             key="form"
-            @submit.prevent="imageStore"
-            class="mx-auto mt-10 max-w-md rounded-lg bg-white p-6 shadow-md"
+            @submit.prevent="onSubmit"
+            class="mx-auto mt-10 flex max-w-md flex-col gap-4 rounded-lg bg-white p-6 shadow-md"
         >
             <!-- Превью изображения -->
-            <div class="mb-3">
+            <div>
                 <div
                     v-if="previewUrl"
-                    class="mb-3 flex flex-col items-center justify-center"
+                    class="flex flex-col items-center justify-center"
                 >
                     <div class="relative">
-                        <LoaderCircle v-if="isLoading" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 animate-spin" :size="48" :stroke-width="2.5" aria-label="Loading" />
+                        <LoaderCircle
+                            v-if="isSubmitting"
+                            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-spin text-blue-600"
+                            :size="48"
+                            :stroke-width="2.5"
+                            aria-label="Loading"
+                        />
                         <img
                             :src="previewUrl"
                             alt="Превью"
                             class="max-h-48 max-w-min rounded-md border border-gray-200 object-contain"
                         />
                     </div>
-                    <span v-if="imageName" class="mb-3 text-sm text-gray-600">
+                    <span v-if="imageName" class="text-sm text-gray-600">
                         {{ imageName }}
                     </span>
                     <span v-else class="text-sm text-gray-400"
                         >Файл не выбран</span
                     >
-
-                    <button
-                        v-if="!isLoading"
-                        type="button"
-                        @click="removeImage"
-                        class="w-full rounded-md bg-red-700 px-4 py-2 font-semibold text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
-                    >
-                        Очистить
-                    </button>
                 </div>
                 <div
                     v-else
@@ -69,6 +66,11 @@
                     </p>
                 </div>
             </div>
+
+            <!-- Сообщение об ошибке валидации-->
+            <p v-if="errors.image" class="mt-1 text-sm text-red-600">
+                {{ errors.image }}
+            </p>
 
             <div class="flex flex-col items-center justify-center gap-4">
                 <!-- Блок выбора изображения -->
@@ -81,32 +83,39 @@
                     @change="onFileSelected"
                 />
 
-                <!-- Кнопка отправки на сервер-->
-                <button
-                    v-if="previewUrl"
-                    type="submit"
-                    :disabled="isLoading"
-                    class="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
-                >
-                    {{ isLoading ? 'Загрузка...' : 'Загрузить на сервер' }}
-                </button>
-
-                <!-- Кнопка выбора изображения-->
-                <button
-                    v-else
-                    type="button"
-                    @click="triggerFileInput"
-                    class="rounded-md bg-gray-200 px-4 py-2 font-semibold text-gray-700 transition hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none active:scale-[0.98]"
-                >
-                    Выбрать изображение
-                </button>
-
-                <!-- Сообщение об ошибке -->
+                <div class="flex flex-col items-center justify-center w-full gap-4">
+                    <button
+                        v-if="!isSubmitting && previewUrl"
+                        type="button"
+                        @click="clearSelectedImage"
+                        class="w-full rounded-md bg-red-700 px-4 py-2 font-semibold text-white transition hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
+                    >
+                        Очистить
+                    </button>
+                    <!-- Кнопка выбора изображения-->
+                    <button
+                        v-if="!isSubmitting&&!previewUrl"
+                        type="button"
+                        @click="triggerFileInput"
+                        class="w-full rounded-md bg-gray-200 px-4 py-2 font-semibold text-gray-700 transition hover:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none active:scale-[0.98]"
+                    >
+                        Выбрать изображение
+                    </button>
+                    <!-- Кнопка отправки на сервер-->
+                    <button
+                        :disabled="isSubmitting || errors.image"
+                        type="submit"
+                        class="w-full rounded-md bg-blue-600 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-50"
+                    >
+                        {{ isSubmitting ? 'Загрузка...' : 'Загрузить на сервер' }}
+                    </button>
+                </div>
+                <!-- Сообщение об ошибке сервера-->
                 <p
-                    v-if="errorMessage"
+                    v-if="serverErrorMessage"
                     class="mt-3 text-center text-sm text-red-600"
                 >
-                    {{ errorMessage }}
+                    {{ serverErrorMessage }}
                 </p>
             </div>
         </form>
@@ -115,17 +124,33 @@
 
 <script setup lang="ts">
 import { X, LoaderCircle } from '@lucide/vue';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
 import { ref } from 'vue';
 import api from '@spa/axios';
+import { uploadImageSchema } from '@spa/pages/dashboard/schemas/upload-image.schema';
 
-const title = ref('');
-const content = ref('');
+// Настройка формы
+const {
+    defineField,
+    errors,
+    handleSubmit,
+    resetForm,
+    isSubmitting,
+    setFieldValue,
+    validateField,
+} = useForm({
+    validationSchema: toTypedSchema(uploadImageSchema),
+});
+// Поле image мы не привязываем через v-bind, т.к. управляем вручную через метод onFileSelected
+// Но defineField нужен для регистрации поля в валидации
+defineField('image');
+
 const imageFile = ref<File | null>(null);
 const imageName = ref('');
 const previewUrl = ref<string | null>(null);
 const uploadedImageUrl = ref<string | null>(null);
-const isLoading = ref(false);
-const errorMessage = ref('');
+const serverErrorMessage = ref('');
 
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -152,17 +177,21 @@ const onFileSelected = (event: Event) => {
         // Они уникальны для сеанса и освобождаются при закрытии страницы или явном revoke.
         // Это позволяет отображать изображения без загрузки на сервер.
         previewUrl.value = URL.createObjectURL(file);
+        setFieldValue('image', file);
+        validateField('image'); // сразу покажем ошибку, если файл не подходит
     } else {
         imageFile.value = null;
         imageName.value = '';
         previewUrl.value = null;
+        setFieldValue('image', undefined);
+        validateField('image'); // очищаем ошибку
     }
     // Сбрасываем поле, чтобы можно было выбрать тот же файл повторно
     target.value = '';
 };
 
 // Снять выбор с изображения
-const removeImage = () => {
+const clearSelectedImage = () => {
     if (previewUrl.value) {
         // Очистка оперативной памяти, чтобы избежать утечек
         URL.revokeObjectURL(previewUrl.value);
@@ -170,32 +199,18 @@ const removeImage = () => {
     }
     imageFile.value = null;
     imageName.value = '';
+    setFieldValue('image', undefined);
+    validateField('image'); // очищаем ошибку
+
     // Сбрасываем input, чтобы при повторном выборе того же файла сработало событие change
     if (fileInput.value) {
         fileInput.value.value = '';
     }
 };
 
-// Очистка формы (сброс всех полей)
-const resetForm = () => {
-    title.value = '';
-    content.value = '';
-    if (previewUrl.value) {
-        // Очистка оперативной памяти, чтобы избежать утечек
-        URL.revokeObjectURL(previewUrl.value);
-        previewUrl.value = null;
-    }
-    imageFile.value = null;
-    imageName.value = '';
-    if (fileInput.value) {
-        fileInput.value = null;
-    }
-};
-
 // Отправка формы
-const imageStore = async () => {
-    errorMessage.value = '';
-    isLoading.value = true;
+const onSubmit = handleSubmit(async () => {
+    serverErrorMessage.value = '';
 
     try {
         const formData = new FormData();
@@ -217,15 +232,16 @@ const imageStore = async () => {
 
         // Очистка формы после успешной отправки
         resetForm();
+        // Также сбрасываем изображение
+        clearSelectedImage();
     } catch (error: any) {
         console.error(error);
-        errorMessage.value =
+        serverErrorMessage.value =
             error.response?.data?.message ||
             'Ошибка при загрузке изображения на сервер';
     } finally {
-        isLoading.value = false;
     }
-};
+});
 
 const uploadedImageClose = () => {
     uploadedImageUrl.value = null;
