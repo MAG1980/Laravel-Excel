@@ -1,7 +1,7 @@
 <template>
     <form
         @submit.prevent="onSubmit"
-        class="relative mx-auto mt-10 flex max-w-md flex-col gap-4 rounded-lg bg-white p-6 shadow-md"
+        class="relative mx-auto mt-10 flex max-w-md flex-col gap-2 rounded-lg bg-white p-6 shadow-md"
     >
         <LoaderCircle
             v-if="isSubmitting"
@@ -86,7 +86,7 @@
             <!-- Превью изображения -->
             <div
                 v-if="previewUrl"
-                class="mt-4 mb-3 flex flex-col items-center justify-center"
+                class="flex flex-col items-center justify-center"
             >
                 <img
                     :src="previewUrl"

@@ -11,7 +11,7 @@ import DashboardLayout from '@spa/pages/dashboard/layouts/DashboardLayout.vue';
         <DashboardLayout>
             <h2 class="text-right">User Dashboard</h2>
             <!-- Единый слот для вложенных маршрутов -->
-            <router-view v-slot="{ Component }" class="flex-1">
+            <router-view v-slot="{ Component }" >
                 <Transition
                     mode="out-in"
                     enter-active-class="transition-all duration-300 ease-out"
