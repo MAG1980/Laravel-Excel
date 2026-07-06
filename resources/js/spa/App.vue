@@ -2,9 +2,11 @@
 <template>
     <div id="app">
         <AppLayout>
-            <OutInTransition>
-                <router-view />
-            </OutInTransition>
+            <router-view v-slot="{ Component }">
+                <OutInTransition>
+                    <component :is="Component" />
+                </OutInTransition>
+            </router-view>
         </AppLayout>
     </div>
 </template>

@@ -23,9 +23,9 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => {
 
 <template>
     <div class="flex min-h-screen flex-col p-4">
-        <Navigation />
-        <Breadcrumbs :breadcrumbs="breadcrumbs" />
+        <Navigation class="flex-shrink-0" />
+        <Breadcrumbs class="flex-shrink-0" :breadcrumbs="breadcrumbs" />
         <!-- Слот для основного контента страницы -->
-        <slot />
+        <slot class="flex-1" />
     </div>
 </template>
