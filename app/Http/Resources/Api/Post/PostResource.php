@@ -20,7 +20,7 @@ class PostResource extends JsonResource
             'authorId' => $this->user_id,
             'title' => $this->title,
             'content' => $this->content,
-            'postImage' => $this->postImage ? [
+            'image' => $this->postImage ? [
                 'id' => $this->postImage->id,
                 'path' => $this->postImage->path,
                 'url' => Storage::url($this->image->path),

@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Post\StoreRequest;
 use App\Http\Resources\Api\Post\PostResource;
 use App\Models\Post;
 use App\Models\PostImage;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -14,19 +15,30 @@ class PostController extends Controller
     {
         $validated = $request->validated();
 
+        try {
+            DB::beginTransaction();
+            $createdPost = Post::create([
+                'user_id' => auth()->id(),
+                'title' => $validated['title'],
+                'content' => $validated['content'],
+            ]);
 
-        $createdPost = Post::create([
-            'user_id' => auth()->id(),
-            'title' => $validated['title'],
-            'content' => $validated['content'],
-        ]);
+            // Сохранение загруженного файла в storage
+            $postImage = $this->saveImage($validated['image'], auth()->id(), $createdPost->id);
 
-        // Сохранение загруженного файла в storage
-        $postImage = $this->saveImage($validated['image'], auth()->id(), $createdPost->id);
+            // Вручную устанавливаем отношение, чтобы оно было доступно в ресурсе
+            // без лишнего запроса к БД.
+            $createdPost->setRelation('postImage', $postImage);
 
-        // Вручную устанавливаем отношение, чтобы оно было доступно в ресурсе
-        // без лишнего запроса к БД.
-        $createdPost->setRelation('postImage', $postImage);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+//            throw $e;
+            return response()->json([
+                'message' => 'Failed to create post',
+                'error' => $e->getMessage()
+            ], 500);
+        }
 
         return PostResource::make($createdPost);
     }

@@ -15,6 +15,9 @@ class Post extends Model
     // Альтернатива $guarded - явно указать, какие поля могут быть изменены при массовом присвоении
     // protected $fillable = ['title', 'content'];
 
+    // Извлекать связанные изображения при извлечении поста из БД
+    protected $with = ['image'];
+
     public function image(): HasOne
     {
         return $this->hasOne(PostImage::class, 'post_id', 'id')
