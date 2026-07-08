@@ -25,9 +25,9 @@ trait UploadsFile
      *
      * @throws \Exception
      */
-    protected static function saveFileToDisk(UploadedFile $file): string
+    protected static function saveFileToDisk(UploadedFile $file, ?string $fileDirectory = null): string
     {
-        $path = Storage::disk(static::$fileDisk)->put(static::$fileDirectory, $file);
+        $path = Storage::disk(static::$fileDisk)->put($fileDirectory ?? static::$fileDirectory, $file);
 
         if ($path === false) {
             throw new \Exception('Не удалось сохранить файл.');
@@ -37,6 +37,7 @@ trait UploadsFile
     }
 
     /**
+     * Сохраняет файл на диск в storage.
      * Создаёт запись о файле в БД (в текущей модели) и возвращает модель.
      *
      * @param UploadedFile $file

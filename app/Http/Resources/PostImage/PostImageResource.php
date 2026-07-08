@@ -21,7 +21,6 @@ class PostImageResource extends JsonResource
             'path' => $this->path,
             // Публичный URL для доступа
             'url' => Storage::url($this->path),
-            'publicUrl' => $this->getUrlAttribute($this->path),
             'created_at' => $this->created_at->toISOString(),
         ];
     }
