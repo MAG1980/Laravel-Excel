@@ -11,4 +11,9 @@ class PostRepository implements PostRepositoryInterface
     {
         return Post::create($data);
     }
+
+    public function find(int $postId): Post
+    {
+        return Post::findOrFail($postId);
+    }
 }

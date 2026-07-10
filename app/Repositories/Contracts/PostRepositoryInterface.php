@@ -8,4 +8,5 @@ interface PostRepositoryInterface
 {
     public function create(array $data): Post;
     // другие методы: find, update, delete, paginate и т.д.
+    public function find(int $postId): Post;
 }
