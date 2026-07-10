@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Post;
-use App\Repositories\Contracts\PostImageRepositoryInterface;
 use App\Repositories\Contracts\PostRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
@@ -12,19 +11,15 @@ class PostService
 {
     public function __construct(
         protected PostRepositoryInterface $postRepository,
-        protected ImageService            $imageService,
-    )
-    {
-    }
+        protected ImageService $imageService,
+    ) {}
 
     /**
      * Создать пост с изображением.
      *
-     * @param UploadedFile $image
-     *
-     * @throws \Exception
+     * @param  UploadedFile  $image
      */
-    public function createPost(array $data, $image): Post
+    public function createPost(array $data, $image): JsonResponse
     {
         try {
             DB::beginTransaction();
@@ -51,7 +46,11 @@ class PostService
             return $post;
         } catch (\Exception $e) {
             DB::rollBack();
-            throw $e; // или логируем и пробрасываем дальше
+
+            return response()->json([
+                'error' => $e->getMessage(),
+            ]);
+            // throw $e; // или логируем и пробрасываем дальше
         }
     }
 }
