@@ -49,8 +49,8 @@ class ImageService
         return $this->imageRepository->deleteWithoutPostId($userId);
     }
 
-    public function index(): Collection
+    public function index(int $userId): Collection
     {
-        return $this->imageRepository->index();
+        return $this->imageRepository->index($userId);
     }
 }

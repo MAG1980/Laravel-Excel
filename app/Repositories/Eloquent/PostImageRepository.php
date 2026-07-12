@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Storage;
 
 class PostImageRepository implements PostImageRepositoryInterface
 {
-    public function index(): Collection
+    public function index(int $userId): Collection
     {
-        return PostImage::all();
+        return PostImage::where('user_id', $userId)->get();
     }
 
     public function store(?int $userId, ?int $postId, string $path, bool $isActive): PostImage

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Image\StoreRequest;
-use App\Http\Resources\PostImage\PostImageResource;
+use App\Http\Resources\Api\PostImage\PostImageResource;
 use App\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -14,37 +14,33 @@ class ImageController extends Controller
 {
     public function __construct(
         protected ImageService $imageService
-    ) {}
+    )
+    {
+    }
 
     public function index(): JsonResponse
     {
         try {
             $userId = auth()->user()->id;
 
-            if (! $userId) {
+            if (!$userId) {
                 return response()->json([
                     'success' => false,
                     'message' => 'User not authenticated',
                 ], Response::HTTP_UNAUTHORIZED); // 401
             }
+
             $images = $this->imageService->index($userId);
 
-            // Проверяем тип и считаем количество
-            $count = is_countable($images) ? count($images) : 0;
-
-            if ($count === 0) {
-                return response()->json([
+            return PostImageResource::collection($images)
+                ->additional([
                     'success' => true,
-                    'message' => 'No images found',
-                    'images' => [],
-                ], Response::HTTP_OK);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => "Successfully found {$count} images",
-                'images' => $images,
-            ], Response::HTTP_OK);
+                    'message' => $images->isEmpty()
+                        ? 'No images found'
+                        : "Found {$images->count()} images"
+                ])
+                ->response()
+                ->setStatusCode(Response::HTTP_OK);
 
         } catch (\Exception $e) {
             Log::error('Failed to get images', [
@@ -55,7 +51,7 @@ class ImageController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get images',
+                'message' => 'Failed to get images: '.$e->getMessage() ,
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -75,6 +71,8 @@ class ImageController extends Controller
 
             // Возвращаем JSON-ответ
             return (new PostImageResource($image))
+                ->additional([
+                    'message' => 'File uploaded successfully'])
                 ->response()
                 ->setStatusCode(201);
         }
@@ -91,7 +89,7 @@ class ImageController extends Controller
         try {
             $userId = auth()->user()->id;
 
-            if (! $userId) {
+            if (!$userId) {
                 return response()->json([
                     'success' => false,
                     'message' => 'User not authenticated',
@@ -116,7 +114,7 @@ class ImageController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete images: '.$e->getMessage(),
+                'message' => 'Failed to delete images: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR); // 500
         }
     }

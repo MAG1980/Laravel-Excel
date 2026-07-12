@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\PostImage;
+namespace App\Http\Resources\Api\PostImage;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,7 +17,7 @@ class PostImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'message' => 'File uploaded successfully',
+            'post_id' => $this->post_id,
             'path' => $this->path,
             // Публичный URL для доступа
             'url' => Storage::url($this->path),

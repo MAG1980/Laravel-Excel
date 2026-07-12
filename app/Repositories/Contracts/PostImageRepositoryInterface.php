@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface PostImageRepositoryInterface
 {
-    public function index(): Collection;
+    public function index(int $userId): Collection;
 
     public function store(int $userId, ?int $postId, string $path, bool $isActive): PostImage;
 
