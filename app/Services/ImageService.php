@@ -4,13 +4,16 @@ namespace App\Services;
 
 use App\Models\PostImage;
 use App\Repositories\Contracts\PostImageRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageService
 {
     public function __construct(
         protected PostImageRepositoryInterface $imageRepository
-    ) {}
+    )
+    {
+    }
 
     private function store(?int $userId, ?int $postId, string $path, bool $isActive = false): PostImage
     {
@@ -27,12 +30,13 @@ class ImageService
      */
     public function uploadAndCreate(
         UploadedFile $file,
-        int $userId,
-        ?int $postId,
-        bool $isActive = true,
-        string $directory = 'uploads/images',
-        string $disk = 'public'
-    ): PostImage {
+        int          $userId,
+        ?int         $postId,
+        bool         $isActive = true,
+        string       $directory = 'uploads/images',
+        string       $disk = 'public'
+    ): PostImage
+    {
         $path = $this->saveFileToDisk($file, $directory, $disk);
         return $this->store($userId, $postId, $path, $isActive);
     }
@@ -40,8 +44,13 @@ class ImageService
     /**
      * Удалить записи, не связанные с постами, и файлы, связанные с этими записями.
      */
-    public function deleteWithoutPostId(int $userId): Int
+    public function deleteWithoutPostId(int $userId): int
     {
-      return  $this->imageRepository->deleteWithoutPostId($userId);
+        return $this->imageRepository->deleteWithoutPostId($userId);
+    }
+
+    public function index(): Collection
+    {
+        return $this->imageRepository->index();
     }
 }

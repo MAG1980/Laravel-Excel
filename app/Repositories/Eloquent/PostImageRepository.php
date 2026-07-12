@@ -4,10 +4,16 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\PostImage;
 use App\Repositories\Contracts\PostImageRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 
 class PostImageRepository implements PostImageRepositoryInterface
 {
+    public function index(): Collection
+    {
+        return PostImage::all();
+    }
+
     public function store(?int $userId, ?int $postId, string $path, bool $isActive): PostImage
     {
         return PostImage::create(

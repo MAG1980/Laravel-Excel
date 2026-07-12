@@ -14,8 +14,50 @@ class ImageController extends Controller
 {
     public function __construct(
         protected ImageService $imageService
-    )
+    ) {}
+
+    public function index(): JsonResponse
     {
+        try {
+            $userId = auth()->user()->id;
+
+            if (! $userId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not authenticated',
+                ], Response::HTTP_UNAUTHORIZED); // 401
+            }
+            $images = $this->imageService->index($userId);
+
+            // Проверяем тип и считаем количество
+            $count = is_countable($images) ? count($images) : 0;
+
+            if ($count === 0) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'No images found',
+                    'images' => [],
+                ], Response::HTTP_OK);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Successfully found {$count} images",
+                'images' => $images,
+            ], Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to get images', [
+                'user_id' => auth()->user()->id ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get images',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function store(StoreRequest $request)
@@ -49,10 +91,10 @@ class ImageController extends Controller
         try {
             $userId = auth()->user()->id;
 
-            if (!$userId) {
+            if (! $userId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'User not authenticated'
+                    'message' => 'User not authenticated',
                 ], Response::HTTP_UNAUTHORIZED); // 401
             }
 
@@ -63,18 +105,18 @@ class ImageController extends Controller
                 'message' => $countDeletedImages > 0
                     ? "Successfully deleted {$countDeletedImages} images"
                     : 'No images to delete',
-                'count_deleted_images' => $countDeletedImages
+                'count_deleted_images' => $countDeletedImages,
             ], Response::HTTP_OK); // 200
 
         } catch (\Exception $e) {
             Log::error('Failed to delete images', [
                 'user_id' => auth()->user()->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete images: ' . $e->getMessage()
+                'message' => 'Failed to delete images: '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR); // 500
         }
     }
