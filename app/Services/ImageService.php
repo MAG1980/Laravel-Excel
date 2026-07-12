@@ -36,4 +36,12 @@ class ImageService
         $path = $this->saveFileToDisk($file, $directory, $disk);
         return $this->store($userId, $postId, $path, $isActive);
     }
+
+    /**
+     * Удалить записи, не связанные с постами, и файлы, связанные с этими записями.
+     */
+    public function deleteWithoutPostId(int $userId): Int
+    {
+      return  $this->imageRepository->deleteWithoutPostId($userId);
+    }
 }

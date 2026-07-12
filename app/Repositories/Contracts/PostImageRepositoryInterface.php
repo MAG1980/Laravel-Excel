@@ -7,4 +7,6 @@ use App\Models\PostImage;
 interface PostImageRepositoryInterface
 {
     public function store(int $userId, ?int $postId, string $path, bool $isActive): PostImage;
+
+    public function deleteWithoutPostId(int $userId):int;
 }

@@ -16,6 +16,7 @@ Route::middleware('auth:sanctum')
         Route::post('/posts', [PostController::class, 'store'])->name('api.posts.store');
 
         Route::post('/images', [ImageController::class, 'store'])->name('api.image.store');
+        Route::post('/images', [ImageController::class, 'deleteWithoutPostId'])->name('api.image.deleteWithoutPostId');
     });
 
 
