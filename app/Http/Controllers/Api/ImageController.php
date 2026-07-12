@@ -32,15 +32,13 @@ class ImageController extends Controller
 
             $images = $this->imageService->index($userId);
 
-            return PostImageResource::collection($images)
-                ->additional([
-                    'success' => true,
-                    'message' => $images->isEmpty()
-                        ? 'No images found'
-                        : "Found {$images->count()} images"
-                ])
-                ->response()
-                ->setStatusCode(Response::HTTP_OK);
+            // Используем ресурс напрямую
+            return response()->json([
+                'success' => true,
+                'message' => $images->isEmpty() ? 'No images found' : "Found {$images->count()} images",
+                'data' => PostImageResource::collection($images),
+            ], Response::HTTP_OK);
+
 
         } catch (\Exception $e) {
             Log::error('Failed to get images', [
