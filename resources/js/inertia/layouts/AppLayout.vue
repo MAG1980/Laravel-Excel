@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppLayout from '@inertia/layouts/app/AppSidebarLayout.vue';
+import AppSidebarLayout from '@inertia/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItem } from '@inertia/types';
 
 type Props = {
@@ -12,7 +12,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs">
+    <AppSidebarLayout :breadcrumbs="breadcrumbs">
         <slot />
-    </AppLayout>
+    </AppSidebarLayout>
 </template>

@@ -25,13 +25,13 @@ const appUrl: string = import.meta.env.VITE_APP_URL
         <SidebarGroupLabel>Platform</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem>
+                <a :href="`${appUrl}/spa/user/dashboard`">
                 <SidebarMenuButton>
-                    <a :href="`${appUrl}/spa/user/dashboard`">
-                        <div class="flex text-gray-500">
+                        <div class="flex text-gray-500 w-full cursor-pointer">
                         <Gem :size="16"/>
                         <span class="ml-2">SPA</span>
-                    </div></a>
-                </SidebarMenuButton>
+                    </div>
+                </SidebarMenuButton></a>
             </SidebarMenuItem>
 
             <SidebarMenuItem v-for="item in items" :key="item.title">
