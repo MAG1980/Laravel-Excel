@@ -16,6 +16,8 @@ defineProps<{
 }>();
 
 const { isCurrentUrl } = useCurrentUrl();
+
+const appUrl: string = import.meta.env.VITE_APP_URL
 </script>
 
 <template>
@@ -24,7 +26,7 @@ const { isCurrentUrl } = useCurrentUrl();
         <SidebarMenu>
             <SidebarMenuItem>
                 <SidebarMenuButton>
-                    <a href="http://localhost/spa/user/dashboard">
+                    <a :href="`${appUrl}/spa/user/dashboard`">
                         <div class="flex text-gray-500">
                         <Gem :size="16"/>
                         <span class="ml-2">SPA</span>

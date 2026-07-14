@@ -2,7 +2,7 @@
     <div id="app">
         <nav class="flex gap-4">
             <router-link :to="{ name: 'home' }">Home</router-link>
-            <a href="http://localhost/inertia/dashboard">Inertia</a>
+            <a :href="`${appUrl}/inertia/dashboard`">Inertia</a>
             <router-link :to="{ name: 'about' }">About</router-link>
             <router-link :to="{ name: 'get.index' }">Get</router-link>
             <router-link v-if="!isLoggedIn" :to="{ name: 'auth.login' }"
@@ -30,6 +30,8 @@ const router = useRouter();
 
 const authStore = useAuthStore();
 const { isLoggedIn } = storeToRefs(authStore);
+
+const appUrl = import.meta.env.VITE_APP_URL;
 
 // Реактивная переменная для сообщения об ошибке (опционально)
 const logoutError = ref<string | null>(null);
