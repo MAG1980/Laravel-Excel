@@ -1,12 +1,16 @@
 <template>
-    <div class="col-span-2 rounded-md bg-cyan-500 text-center text-white mb-2">
-        Main
-    </div>
-    <div
-        class="grid grid-cols-2 gap-2 text-center text-white rounded-md bg-cyan-300"
-    >
-        <div class="col-span-1 rounded-md">Posts</div>
-        <ImagesList class="col-span-1" :images="images" />
+    <div>
+        <div
+            class="col-span-2 mb-2 rounded-md bg-cyan-500 text-center text-white"
+        >
+            Main
+        </div>
+        <div
+            class="grid grid-cols-2 gap-2 rounded-md bg-cyan-300 text-center text-white"
+        >
+            <div class="col-span-1 rounded-md">Posts</div>
+            <ImagesList class="col-span-1" :images="images" />
+        </div>
     </div>
 </template>
 
@@ -26,5 +30,6 @@ onMounted(async () => {
 const fetchImages = async () => {
     const response = await api.get<ApiResponse<PostImage[]>>('api/images');
     images.value = response.data.data;
+    console.log({images: images.value});
 };
 </script>
